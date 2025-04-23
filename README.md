@@ -65,7 +65,7 @@ async def main():
         print(all_products)
 
         # Get a product
-        product = await client.product.get("pre_123456789")
+        product = await client.product.get("pr0_123456789")
         print(product)
 
 
