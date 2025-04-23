@@ -38,11 +38,11 @@ client = Client(
 )
 
 # List products
-products = client.products.list()
+products = client.product.list()
 print(products)
 
 # Get a specific product
-product = client.products.get(product_id="pro_123")
+product = client.product.get(product_id="pro_123")
 print(product)
 ```
 
@@ -61,11 +61,11 @@ async def main():
         environment=Environment.SANDBOX,  # or Environment.PRODUCTION
     ) as client:
         # List products
-        all_products = await client.products.list()
+        all_products = await client.product.list()
         print(all_products)
 
         # Get a product
-        product = await client.products.get(initial_product.data.id)
+        product = await client.product.get(initial_product.data.id)
         print(product)
 
 

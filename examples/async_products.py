@@ -9,7 +9,7 @@ async def main():
         api_key="API_KEY",
         environment=Environment.SANDBOX,
     ) as client:
-        initial_product = await client.products.create(
+        initial_product = await client.product.create(
             name="Test Product",
             tax_category="standard",
             description="Test Description",
@@ -19,15 +19,15 @@ async def main():
         print(initial_product)
 
         # List products
-        all_products = await client.products.list()
+        all_products = await client.product.list()
         print(all_products)
 
         # Get a product
-        product = await client.products.get(initial_product.data.id)
+        product = await client.product.get(initial_product.data.id)
         print(product)
 
         # Update a product
-        updated_product = await client.products.update(
+        updated_product = await client.product.update(
             initial_product.data.id,
             name="Updated Product",
             description="Updated Description",

@@ -6,7 +6,7 @@ client = Client(
 )
 
 # Create a product
-initial_product = client.products.create(
+initial_product = client.product.create(
     name="Test Product",
     tax_category="standard",
     description="Test Description",
@@ -16,15 +16,15 @@ initial_product = client.products.create(
 print(initial_product)
 
 # List products
-all_products = client.products.list()
+all_products = client.product.list()
 print(all_products)
 
 # Get a product
-product = client.products.get(initial_product.data.id)
+product = client.product.get(initial_product.data.id)
 print(product)
 
 # Update a product
-updated_product = client.products.update(
+updated_product = client.product.update(
     initial_product.data.id,
     name="Updated Product",
     description="Updated Description",
