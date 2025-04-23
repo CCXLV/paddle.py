@@ -35,7 +35,129 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Planned API Endpoints
 
 - [x] Products
-  - [x] List products
-  - [x] Get product
-  - [x] Create product
-  - [x] Update product
+  - [x] List
+  - [x] Create
+  - [x] Get
+  - [x] Update
+
+- [ ] Prices
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+  - [ ] Update
+
+- [ ] Discounts
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+  - [ ] Update
+
+- [ ] Discounts
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+  - [ ] Update
+
+- [ ] Customers
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+  - [ ] Update
+  - [ ] List credit balances
+  - [ ] Generate auth token
+
+- [ ] Addresses
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+  - [ ] Update
+
+- [ ] Businesses
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+  - [ ] Update
+
+- [ ] Payment methods
+  - [ ] List
+  - [ ] Get
+  - [ ] Delete
+
+- [ ] Customer portal sessions
+  - [ ] Create
+
+- [ ] Transactions
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+  - [ ] Update
+  - [ ] Preview
+  - [ ] Get PDF Invoice
+  - [ ] Revise
+
+- [ ] Subscriptions
+  - [ ] List
+  - [ ] Get
+  - [ ] Preview
+  - [ ] Update
+  - [ ] Get transaction to update payment method
+  - [ ] Preview charge
+  - [ ] Charge
+  - [ ] Activate
+  - [ ] Pause
+  - [ ] Resume
+  - [ ] Cancel
+
+- [ ] Adjustments
+  - [ ] List
+  - [ ] Create
+  - [ ] PDF Credit note
+
+- [ ] Pricing preview
+  - [ ] Preview prices
+
+- [ ] Reports
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+  - [ ] Get CSV
+
+- [ ] Event types
+  - [ ] List
+
+- [ ] Events
+  - [ ] List
+
+- [ ] Notification settings
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+  - [ ] Update
+  - [ ] Delete
+
+- [ ] Notifications
+  - [ ] List
+  - [ ] Get
+  - [ ] Replay
+
+- [ ] Notification logs
+  - [ ] List
+
+- [ ] Simulation types
+  - [ ] List
+
+- [ ] Simulations
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+  - [ ] Update
+
+- [ ] Simulation runs
+  - [ ] List
+  - [ ] Create
+  - [ ] Get
+
+- [ ] Simulation run events
+  - [ ] List
+  - [ ] Get
+  - [ ] Replay
