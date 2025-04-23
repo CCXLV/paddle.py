@@ -42,15 +42,8 @@ dev = [
     "pytest-asyncio",
 ]
 
-[tool.setuptools]
-packages = [
-    "paddle",
-    "paddle/aio",
-    "paddle/models",
-    "paddle/models/resources",
-    "paddle/models/responses",
-    "paddle/utils",
-]
+[tool.setuptools.packages.find]
+where = ["."]
 
 [tool.black]
 line-length = 100
