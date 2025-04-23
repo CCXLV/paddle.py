@@ -2,6 +2,46 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "paddle-sdk"
+dynamic = ["version"]
+description = "A modern Python SDK for Paddle's API with type hints and async support"
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [
+    { name="CCXLV", email="mereba2627@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+]
+keywords = ["paddle", "api", "wrapper", "sdk", "async", "types"]
+dependencies = [
+    "httpx>=0.28.1",
+    "pydantic>=2.10.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "setuptools",
+    "black",
+    "ruff",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-asyncio",
+]
+
+[tool.setuptools]
+packages = [
+    "paddle",
+]
+
 [tool.black]
 line-length = 100
 include = '\.pyi?$'
@@ -11,7 +51,6 @@ lint.select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
     "F",  # pyflakes
-    # "I",  # isort
     "C",  # flake8-comprehensions
     "B",  # flake8-bugbear
 ]
@@ -20,7 +59,6 @@ lint.ignore = [
     "B008",  # do not perform function calls in argument defaults
     "C901",  # complexity,
 ]
-
 
 # Exclude a variety of commonly ignored directories.
 exclude = [
@@ -32,11 +70,7 @@ exclude = [
     "node_modules",
 ]
 
-# Same as Black.
-line-length = 100
-
 [tool.ruff.lint.mccabe]
-# Unlike Flake8, default to a complexity level of 10.
 max-complexity = 10
 
 [tool.ruff.lint.isort]
