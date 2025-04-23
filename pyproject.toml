@@ -45,6 +45,11 @@ dev = [
 [tool.setuptools]
 packages = [
     "paddle",
+    "paddle/aio",
+    "paddle/models",
+    "paddle/models/resources",
+    "paddle/models/responses",
+    "paddle/utils",
 ]
 
 [tool.black]
