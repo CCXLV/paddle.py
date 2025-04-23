@@ -54,10 +54,6 @@ class PriceData(BaseModel):
     custom_data: Optional[Dict[str, Any]] = None
 
 
-class Prices(BaseModel):
-    data: Optional[List[PriceData]] = None
-
-
 class ProductData(BaseModel):
     id: str
     name: str
@@ -73,7 +69,7 @@ class ProductData(BaseModel):
 
 
 class ProductDataWithPrices(ProductData):
-    prices: Optional[Prices] = None
+    prices: Optional[List[PriceData]] = None
 
 
 class ProductMeta(BaseModel):
@@ -101,7 +97,7 @@ class ProductListResponse:
 @dataclass
 class ProductCreateResponse:
     """
-    Response for the Product Create endpoint.
+    Response for the Product Create, Update endpoint.
     """
 
     data: ProductData
