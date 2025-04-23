@@ -98,7 +98,7 @@ def test_products_list(test_client):
         assert response.data == []
         assert response.meta.request_id == "test"
 
-        
+
 def test_failed_products_list(test_client):
     with patch.object(test_client.products, "_list", side_effect=PaddleAPIError(404, "Not found")):
         with pytest.raises(PaddleNotFoundError) as exc_info:
@@ -160,10 +160,14 @@ def test_products_create_other_error(test_client):
 @pytest.mark.asyncio
 async def test_async_products_create_other_error(test_async_client):
     with patch.object(
-        test_async_client.products, "_create", side_effect=PaddleAPIError(500, "Internal server error")
+        test_async_client.products,
+        "_create",
+        side_effect=PaddleAPIError(500, "Internal server error"),
     ):
         with pytest.raises(PaddleAPIError) as exc_info:
-            await test_async_client.products.create(name="Test Product", tax_category="standard", type="custom")
+            await test_async_client.products.create(
+                name="Test Product", tax_category="standard", type="custom"
+            )
         assert exc_info.value.status_code == 500
         assert str(exc_info.value) == "Paddle API Error: 500 - Internal server error"
 
@@ -171,9 +175,10 @@ async def test_async_products_create_other_error(test_async_client):
         test_async_client.products, "_create", side_effect=PaddleAPIError(422, "Validation error")
     ):
         with pytest.raises(PaddleValidationError) as exc_info:
-            await test_async_client.products.create(name="Test Product", tax_category="standard", type="custom")
+            await test_async_client.products.create(
+                name="Test Product", tax_category="standard", type="custom"
+            )
         assert str(exc_info.value) == "Paddle API Error: 422 - Validation error"
-
 
 
 @pytest.mark.asyncio
@@ -197,7 +202,9 @@ async def test_async_products_get_other_error(test_async_client):
 @pytest.mark.asyncio
 async def test_async_products_update_other_error(test_async_client):
     with patch.object(
-        test_async_client.products, "_update", side_effect=PaddleAPIError(500, "Internal server error")
+        test_async_client.products,
+        "_update",
+        side_effect=PaddleAPIError(500, "Internal server error"),
     ):
         with pytest.raises(PaddleAPIError) as exc_info:
             await test_async_client.products.update("pre_123", name="Updated Product")
@@ -251,7 +258,9 @@ def test_products_get_not_found(test_client):
         assert exc_info.value.status_code == 404
         assert str(exc_info.value) == "Paddle API Error: 404 - Not found"
 
-    with patch.object(test_client.products, "_get", side_effect=PaddleAPIError(500, "Internal server error")):
+    with patch.object(
+        test_client.products, "_get", side_effect=PaddleAPIError(500, "Internal server error")
+    ):
         with pytest.raises(PaddleAPIError) as exc_info:
             test_client.products.get("pre_123")
         assert exc_info.value.status_code == 500
@@ -392,15 +401,16 @@ async def test_async_products_update(test_async_client):
 
 def test_resource_base_initialization(test_client):
     """Test that a resource can be initialized with a client."""
+
     class TestResource(ResourceBase):
         def __init__(self, client: BaseClient):
             super().__init__(client)
             self.test_value = "test"
 
     resource = TestResource(test_client)
-    
+
     assert resource._client == test_client
     assert resource.test_value == "test"
     assert resource._client.base_url == "https://sandbox-api.paddle.com"
     assert resource._client.timeout == 30
-    assert resource._client.max_retries == 3 
+    assert resource._client.max_retries == 3
