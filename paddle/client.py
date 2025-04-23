@@ -99,9 +99,9 @@ class Client(BaseClient):
 
     def _init_resources(self):
         """Initialize resources."""
-        from .models.resources import Products
+        from .models.resources import Product
 
-        self.products = self._create_resource(Products)
+        self.product = self._create_resource(Product)
 
     def _request(
         self,

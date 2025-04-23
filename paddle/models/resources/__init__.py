@@ -1,4 +1,4 @@
-__all__ = ["Products", "AsyncProducts"]
+__all__ = ["Product", "AsyncProduct"]
 
-from .products import Products
-from .products import AsyncProducts
+from .product import Product
+from .product import AsyncProduct

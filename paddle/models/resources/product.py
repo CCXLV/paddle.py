@@ -4,7 +4,7 @@ from paddle.client import Client
 from paddle.aio.client import AsyncClient
 
 from paddle.models.resources.base import ResourceBase
-from paddle.models.responses.products import (
+from paddle.models.responses.product import (
     ProductListResponse,
     ProductCreateResponse,
     ProductGetResponse,
@@ -15,7 +15,7 @@ from paddle.utils.constants import TAX_CATEGORY
 from paddle.exceptions import PaddleAPIError, PaddleValidationError, PaddleNotFoundError
 
 
-class ProductsBase(ResourceBase):
+class ProductBase(ResourceBase):
     """Base resource for Paddle Products API endpoints."""
 
     def __init__(self, client: Union[Client, AsyncClient]):
@@ -271,7 +271,7 @@ class ProductsBase(ResourceBase):
             raise
 
 
-class Products(ProductsBase):
+class Product(ProductBase):
     """Resource for Paddle Products API endpoints."""
 
     def __init__(self, client: Client):
@@ -308,7 +308,7 @@ class Products(ProductsBase):
         )
 
 
-class AsyncProducts(ProductsBase):
+class AsyncProduct(ProductBase):
     """Resource for Paddle Products API endpoints."""
 
     def __init__(self, client: AsyncClient):

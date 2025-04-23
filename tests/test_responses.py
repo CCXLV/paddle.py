@@ -1,4 +1,4 @@
-from paddle.models.responses.products import (
+from paddle.models.responses.product import (
     ProductListResponse,
     ProductCreateResponse,
     ProductGetResponse,
