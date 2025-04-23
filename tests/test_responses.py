@@ -6,7 +6,6 @@ from paddle.models.responses.product import (
     ProductDataWithPrices,
     ProductMeta,
     ProductMetaWithPagination,
-    Prices,
     PriceData,
     UnitPrice,
     Quantity,
@@ -26,7 +25,7 @@ def test_prices_response():
                 "status": "active",
                 "created_at": "2021-01-01",
                 "updated_at": "2021-01-01",
-                "prices": None,
+                "prices": [],
             }
         ],
         "meta": {
@@ -55,10 +54,8 @@ def test_prices_with_data():
         created_at="2021-01-01",
         updated_at="2021-01-01",
     )
-    prices = Prices(data=[price_data])
-    assert prices.data is not None
-    assert len(prices.data) == 1
-    assert prices.data[0].id == "price_123"
+    assert price_data is not None
+    assert price_data.id == "price_123"
 
 
 def test_product_data_with_all_fields():
@@ -98,7 +95,6 @@ def test_product_data_with_prices():
         created_at="2021-01-01",
         updated_at="2021-01-01",
     )
-    prices = Prices(data=[price_data])
 
     product = ProductDataWithPrices(
         id="pro_123",
@@ -108,12 +104,11 @@ def test_product_data_with_prices():
         status="active",
         created_at="2021-01-01",
         updated_at="2021-01-01",
-        prices=prices,
+        prices=[price_data],
     )
     assert product.prices is not None
-    assert product.prices.data is not None
-    assert len(product.prices.data) == 1
-    assert product.prices.data[0].id == "price_123"
+    assert len(product.prices) == 1
+    assert product.prices[0].id == "price_123"
 
 
 def test_product_meta():
@@ -168,23 +163,21 @@ def test_product_get_response():
             "status": "active",
             "created_at": "2021-01-01",
             "updated_at": "2021-01-01",
-            "prices": {
-                "data": [
-                    {
-                        "id": "price_123",
-                        "product_id": "pro_123",
-                        "description": "Test price",
-                        "type": "standard",
-                        "tax_mode": "account_setting",
+            "prices": [
+                {
+                    "id": "price_123",
+                    "product_id": "pro_123",
+                    "description": "Test price",
+                    "type": "standard",
+                    "tax_mode": "account_setting",
                         "unit_price": {"amount": "10.00", "currency_code": "USD"},
                         "unit_price_overrides": [],
                         "quantity": {"minimum": 1, "maximum": 10},
                         "status": "active",
                         "created_at": "2021-01-01",
                         "updated_at": "2021-01-01",
-                    }
-                ]
-            },
+                },
+            ],
         },
         "meta": {"request_id": "req_123"},
     }
@@ -192,6 +185,6 @@ def test_product_get_response():
     product_response = ProductGetResponse(response)
     assert product_response.data.id == "pro_123"
     assert product_response.data.prices is not None
-    assert len(product_response.data.prices.data) == 1
-    assert product_response.data.prices.data[0].id == "price_123"
+    assert len(product_response.data.prices) == 1
+    assert product_response.data.prices[0].id == "price_123"
     assert product_response.meta.request_id == "req_123"

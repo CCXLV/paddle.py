@@ -236,7 +236,7 @@ def test_product_get(test_client):
             "status": "active",
             "created_at": "2021-01-01",
             "updated_at": "2021-01-01",
-            "prices": {"data": []},
+            "prices": [],
         },
         "meta": {"request_id": "test"},
     }
@@ -248,7 +248,7 @@ def test_product_get(test_client):
         assert response.data.tax_category == "standard"
         assert response.data.type == "custom"
         assert response.data.status == "active"
-        assert response.data.prices.data == []
+        assert response.data.prices == []
 
 
 def test_product_get_not_found(test_client):
@@ -360,7 +360,7 @@ async def test_async_product_get(test_async_client):
             "status": "active",
             "created_at": "2021-01-01",
             "updated_at": "2021-01-01",
-            "prices": {"data": []},
+            "prices": [],
         },
         "meta": {"request_id": "test"},
     }
@@ -372,7 +372,7 @@ async def test_async_product_get(test_async_client):
         assert response.data.tax_category == "standard"
         assert response.data.type == "custom"
         assert response.data.status == "active"
-        assert response.data.prices.data == []
+        assert response.data.prices == []
 
 
 @pytest.mark.asyncio
@@ -414,3 +414,22 @@ def test_resource_base_initialization(test_client):
     assert resource._client.base_url == "https://sandbox-api.paddle.com"
     assert resource._client.timeout == 30
     assert resource._client.max_retries == 3
+
+
+def test_product_get_with_query_params(test_client):
+    mock_response = {
+        "data": {
+            "id": "pre_123",
+            "name": "Test Product",
+            "tax_category": "standard",
+            "type": "custom",
+            "status": "active",
+            "created_at": "2021-01-01",
+            "updated_at": "2021-01-01",
+            "prices": [],
+        },
+        "meta": {"request_id": "test"},
+    }
+    with patch.object(test_client.product, "_get", return_value=mock_response):
+        response = test_client.product.get("pre_123", include=["prices"])
+        assert response.data.id == "pre_123"
