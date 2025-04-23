@@ -65,7 +65,7 @@ async def main():
         print(all_products)
 
         # Get a product
-        product = await client.product.get(initial_product.data.id)
+        product = await client.product.get("pre_123456789")
         print(product)
 
 
@@ -94,7 +94,7 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 3. Install development dependencies:
 
 ```bash
-pip install -e ".[dev]"
+pip install -e .[dev]
 ```
 
 ### Running Tests
