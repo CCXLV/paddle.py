@@ -4,7 +4,11 @@ from paddle.client import Client
 from paddle.aio.client import AsyncClient
 
 from paddle.models.resources.base import ResourceBase
-from paddle.models.responses.product import ProductListResponse, ProductCreateResponse, ProductGetResponse
+from paddle.models.responses.product import (
+    ProductListResponse,
+    ProductCreateResponse,
+    ProductGetResponse,
+)
 
 from paddle.utils.decorators import validate_params
 from paddle.utils.constants import TAX_CATEGORY
