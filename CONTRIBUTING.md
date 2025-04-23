@@ -21,7 +21,7 @@ By participating in this project, you agree to abide by the [Code of Conduct](CO
    ```
 4. Install development dependencies:
    ```bash
-   pip install -e ".[dev]"
+   pip install -e .[dev]
    ```
 5. Create a new branch for your feature:
    ```bash
