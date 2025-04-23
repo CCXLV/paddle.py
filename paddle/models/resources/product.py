@@ -4,14 +4,11 @@ from paddle.client import Client
 from paddle.aio.client import AsyncClient
 
 from paddle.models.resources.base import ResourceBase
-from paddle.models.responses.product import (
-    ProductListResponse,
-    ProductCreateResponse,
-    ProductGetResponse,
-)
+from paddle.models.responses.product import ProductListResponse, ProductCreateResponse, ProductGetResponse
 
 from paddle.utils.decorators import validate_params
 from paddle.utils.constants import TAX_CATEGORY
+from paddle.utils.helpers import filter_none_kwargs
 from paddle.exceptions import PaddleAPIError, PaddleValidationError, PaddleNotFoundError
 
 
@@ -134,7 +131,7 @@ class ProductBase(ResourceBase):
             print(product)
         """
         try:
-            response = self._create(
+            kwargs = filter_none_kwargs(
                 name=name,
                 tax_category=tax_category,
                 description=description,
@@ -142,6 +139,8 @@ class ProductBase(ResourceBase):
                 image_url=image_url,
                 custom_data=custom_data,
             )
+            response = self._create(**kwargs)
+            
             return ProductCreateResponse(response)
         except PaddleAPIError as e:
             if e.status_code == 422:
@@ -254,7 +253,7 @@ class ProductBase(ResourceBase):
             print(product)
         """
         try:
-            response = self._update(
+            kwargs = filter_none_kwargs(
                 product_id=product_id,
                 name=name,
                 description=description,
@@ -264,6 +263,8 @@ class ProductBase(ResourceBase):
                 custom_data=custom_data,
                 status=status,
             )
+
+            response = self._update(**kwargs)
             return ProductCreateResponse(response)
         except PaddleAPIError as e:
             if e.status_code == 422:
@@ -443,7 +444,7 @@ class AsyncProduct(ProductBase):
             asyncio.run(main())
         """
         try:
-            response = await self._create(
+            kwargs = filter_none_kwargs(
                 name=name,
                 tax_category=tax_category,
                 description=description,
@@ -451,6 +452,8 @@ class AsyncProduct(ProductBase):
                 image_url=image_url,
                 custom_data=custom_data,
             )
+            response = await self._create(**kwargs)
+
             return ProductCreateResponse(response)
         except PaddleAPIError as e:
             if e.status_code == 422:
@@ -571,7 +574,7 @@ class AsyncProduct(ProductBase):
             asyncio.run(main())
         """
         try:
-            response = await self._update(
+            kwargs = filter_none_kwargs(
                 product_id=product_id,
                 name=name,
                 description=description,
@@ -581,6 +584,8 @@ class AsyncProduct(ProductBase):
                 custom_data=custom_data,
                 status=status,
             )
+            response = await self._update(**kwargs)
+
             return ProductCreateResponse(response)
         except PaddleAPIError as e:
             if e.status_code == 422:
