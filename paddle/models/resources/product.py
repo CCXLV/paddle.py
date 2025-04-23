@@ -1,4 +1,4 @@
-from typing import Union, Optional, Literal, Dict, Any
+from typing import Union, Optional, Literal, Dict, Any, List
 
 from paddle.client import Client
 from paddle.aio.client import AsyncClient
@@ -26,7 +26,7 @@ class ProductBase(ResourceBase):
         """Internal method to create a product."""
         raise NotImplementedError("Subclasses must implement this method")
 
-    def _get(self, product_id: str) -> Dict[str, Any]:
+    def _get(self, product_id: str, **kwargs: Any) -> Dict[str, Any]:
         """Internal method to get a product."""
         raise NotImplementedError("Subclasses must implement this method")
 
@@ -140,7 +140,7 @@ class ProductBase(ResourceBase):
                 custom_data=custom_data,
             )
             response = self._create(**kwargs)
-            
+
             return ProductCreateResponse(response)
         except PaddleAPIError as e:
             if e.status_code == 422:
@@ -148,7 +148,12 @@ class ProductBase(ResourceBase):
             raise
 
     @validate_params
-    def get(self, product_id: str) -> ProductGetResponse:
+    def get(
+        self,
+        product_id: str,
+        *,
+        include: Optional[List[Literal["prices"]]] = None,
+    ) -> ProductGetResponse:
         """
         Gets a product by ID.
 
@@ -181,7 +186,9 @@ class ProductBase(ResourceBase):
             print(product)
         """
         try:
-            response = self._get(product_id)
+            # include need to be a comma separated list
+            response = self._get(product_id, include=",".join(include) if include else None)
+
             return ProductGetResponse(response)
         except PaddleAPIError as e:
             if e.status_code == 404:
@@ -263,8 +270,8 @@ class ProductBase(ResourceBase):
                 custom_data=custom_data,
                 status=status,
             )
-
             response = self._update(**kwargs)
+
             return ProductCreateResponse(response)
         except PaddleAPIError as e:
             if e.status_code == 422:
@@ -293,11 +300,12 @@ class Product(ProductBase):
             json=kwargs,
         )
 
-    def _get(self, product_id: str) -> Dict[str, Any]:
+    def _get(self, product_id: str, **query_params: Any) -> Dict[str, Any]:
         """Internal method to get a price."""
         return self._client._request(
             method="GET",
             path=f"/products/{product_id}",
+            params=query_params,
         )
 
     def _update(self, product_id: str, **kwargs: Any) -> Dict[str, Any]:
@@ -330,11 +338,12 @@ class AsyncProduct(ProductBase):
             json=kwargs,
         )
 
-    async def _get(self, product_id: str) -> Dict[str, Any]:
+    async def _get(self, product_id: str, **query_params: Any) -> Dict[str, Any]:
         """Internal method to get a product."""
         return await self._client._request(
             method="GET",
             path=f"/products/{product_id}",
+            params=query_params,
         )
 
     async def _update(self, product_id: str, **kwargs: Any) -> Dict[str, Any]:
@@ -379,6 +388,7 @@ class AsyncProduct(ProductBase):
         response = await self._list()
         return ProductListResponse(response)
 
+    @validate_params
     async def create(
         self,
         *,
@@ -461,7 +471,12 @@ class AsyncProduct(ProductBase):
             raise
 
     @validate_params
-    async def get(self, product_id: str) -> ProductGetResponse:
+    async def get(
+        self,
+        product_id: str,
+        *,
+        include: Optional[List[Literal["prices"]]] = None,
+    ) -> ProductGetResponse:
         """|coroutine|
 
         Gets a product by ID.
@@ -498,7 +513,8 @@ class AsyncProduct(ProductBase):
             asyncio.run(main())
         """
         try:
-            response = await self._get(product_id)
+            # include need to be a comma separated list
+            response = await self._get(product_id, include=",".join(include) if include else None)
             return ProductGetResponse(response)
         except PaddleAPIError as e:
             if e.status_code == 404:
