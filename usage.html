@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usage Guide &mdash; paddle-sdk 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=563abbd3" />
+
+  
+    <link rel="canonical" href="https://ccxlv.github.io/paddle-sdk/usage.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+    <link rel="icon" href="_static/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Paddle SDK Documentation">
+    <meta name="keywords" content="paddle, sdk, documentation">
+    <link rel="stylesheet" href="_static/custom.css" type="text/css">
+     
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980b9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            paddle-sdk
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#client-initialization">Client Initialization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#synchronous-client">Synchronous Client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#asynchronous-client">Asynchronous Client</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-configuration">Environment Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#available-resources">Available Resources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#products">Products</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#retry-mechanism">Retry Mechanism</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980b9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">paddle-sdk</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Usage Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="usage-guide">
+<h1>Usage Guide<a class="headerlink" href="#usage-guide" title="Link to this heading"></a></h1>
+<p>This guide will help you get started with the Paddle SDK. We’ll cover the basic usage patterns and show you how to use both the synchronous and asynchronous clients.</p>
+<section id="client-initialization">
+<h2>Client Initialization<a class="headerlink" href="#client-initialization" title="Link to this heading"></a></h2>
+<p>The SDK provides two types of clients: synchronous and asynchronous. Both support the same features but have different usage patterns.</p>
+<section id="synchronous-client">
+<h3>Synchronous Client<a class="headerlink" href="#synchronous-client" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">paddle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Client</span><span class="p">,</span> <span class="n">Environment</span>
+
+<span class="c1"># Initialize the client</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;your-api-key&quot;</span><span class="p">,</span>
+    <span class="n">environment</span><span class="o">=</span><span class="n">Environment</span><span class="o">.</span><span class="n">SANDBOX</span><span class="p">,</span>  <span class="c1"># or Environment.PRODUCTION</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>  <span class="c1"># optional: request timeout in seconds</span>
+    <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># optional: maximum number of retries</span>
+<span class="p">)</span>
+
+<span class="c1"># Use the client</span>
+<span class="n">products</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="asynchronous-client">
+<h3>Asynchronous Client<a class="headerlink" href="#asynchronous-client" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paddle.aio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paddle.environment</span><span class="w"> </span><span class="kn">import</span> <span class="n">Environment</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncClient</span><span class="p">(</span>
+        <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;your-api-key&quot;</span><span class="p">,</span>
+        <span class="n">environment</span><span class="o">=</span><span class="n">Environment</span><span class="o">.</span><span class="n">SANDBOX</span><span class="p">,</span>  <span class="c1"># or Environment.PRODUCTION</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>  <span class="c1"># optional: request timeout in seconds</span>
+        <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># optional: maximum number of retries</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">products</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="environment-configuration">
+<h2>Environment Configuration<a class="headerlink" href="#environment-configuration" title="Link to this heading"></a></h2>
+<p>The SDK supports two environments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Environment.SANDBOX</span></code>: For testing and development</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Environment.PRODUCTION</span></code>: For production use</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">paddle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Environment</span>
+
+<span class="c1"># Use sandbox environment for testing</span>
+<span class="n">sandbox_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;test-key&quot;</span><span class="p">,</span> <span class="n">environment</span><span class="o">=</span><span class="n">Environment</span><span class="o">.</span><span class="n">SANDBOX</span><span class="p">)</span>
+
+<span class="c1"># Use production environment for live data</span>
+<span class="n">production_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;live-key&quot;</span><span class="p">,</span> <span class="n">environment</span><span class="o">=</span><span class="n">Environment</span><span class="o">.</span><span class="n">PRODUCTION</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<p>The SDK provides comprehensive error handling through custom exceptions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">paddle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paddle.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PaddleAPIError</span><span class="p">,</span>
+    <span class="n">PaddleAuthenticationError</span><span class="p">,</span>
+    <span class="n">PaddlePermissionError</span><span class="p">,</span>
+    <span class="n">PaddleNotFoundError</span><span class="p">,</span>
+    <span class="n">PaddleValidationError</span><span class="p">,</span>
+    <span class="n">PaddleRateLimitError</span><span class="p">,</span>
+    <span class="n">PaddleServerError</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;non-existent-id&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">PaddleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Product not found: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">PaddleAPIError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;API error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="available-resources">
+<h2>Available Resources<a class="headerlink" href="#available-resources" title="Link to this heading"></a></h2>
+<p>The SDK currently supports the following resources:</p>
+<section id="products">
+<h3>Products<a class="headerlink" href="#products" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># List products</span>
+<span class="n">products</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+
+<span class="c1"># Get a specific product</span>
+<span class="n">product</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">product_id</span><span class="o">=</span><span class="s2">&quot;pro_123&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create a product</span>
+<span class="n">new_product</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Product&quot;</span><span class="p">,</span>
+    <span class="n">tax_category</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Product description&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Update a product</span>
+<span class="n">updated_product</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">product_id</span><span class="o">=</span><span class="s2">&quot;pro_123&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Updated Name&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Updated description&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="retry-mechanism">
+<h2>Retry Mechanism<a class="headerlink" href="#retry-mechanism" title="Link to this heading"></a></h2>
+<p>The SDK includes an automatic retry mechanism for failed requests. It will retry requests that fail with:</p>
+<ul class="simple">
+<li><p>5xx server errors</p></li>
+<li><p>429 rate limit errors</p></li>
+<li><p>408 request timeout errors</p></li>
+</ul>
+<p>The retry mechanism uses exponential backoff and respects the <code class="docutils literal notranslate"><span class="pre">Retry-After</span></code> header when present.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configure retry behavior</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;your-api-key&quot;</span><span class="p">,</span>
+    <span class="n">max_retries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>  <span class="c1"># Increase max retries</span>
+<span class="p">)</span>
+
+<span class="c1"># Disable retries for a specific request</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;/endpoint&quot;</span><span class="p">,</span> <span class="n">retry_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">PaddleAPIError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, CCXLV.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <div class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <p>&copy; 2025, CCXLV. All rights reserved.</p>
+                <p>Paddle SDK Version 0.1.0</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/ccxlv/paddle-sdk">GitHub</a>
+            </div>
+        </div>
+    </div>
+     
+
+
+</body>
+</html>
