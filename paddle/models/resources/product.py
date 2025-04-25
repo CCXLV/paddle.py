@@ -1,4 +1,6 @@
-from typing import Union, Optional, Literal, Dict, Any, List
+from typing import Union, Optional, Literal, Annotated, Dict, Any, List
+
+from pydantic import Field
 
 from paddle.client import Client
 from paddle.aio.client import AsyncClient
@@ -22,7 +24,7 @@ class ProductBase(ResourceBase):
     def __init__(self, client: Union[Client, AsyncClient]):
         self._client = client
 
-    def _list(self) -> Dict[str, Any]:
+    def _list(self, **kwargs: Any) -> Dict[str, Any]:
         """Internal method to list products."""
         raise NotImplementedError("Subclasses must implement this method")
 
@@ -38,9 +40,68 @@ class ProductBase(ResourceBase):
         """Internal method to update a product."""
         raise NotImplementedError("Subclasses must implement this method")
 
-    def list(self) -> ProductListResponse:
+    def list(
+        self,
+        *,
+        after: Optional[str] = None,
+        id: Optional[List[str]] = None,
+        include: Optional[List[Literal["prices"]]] = None,
+        order_by: Optional[Literal[
+            "created_at[ASC]",
+            "created_at[DESC]",
+            "updated_at[ASC]",
+            "updated_at[DESC]",
+            "custom_data[ASC]",
+            "custom_data[DESC]",
+            "description[ASC]",
+            "description[DESC]",
+            "id[ASC]",
+            "id[DESC]",
+            "image_url[ASC]",
+            "image_url[DESC]",
+            "name[ASC]",
+            "name[DESC]",
+            "status[ASC]",
+            "status[DESC]",
+            "tax_category[ASC]",
+            "tax_category[DESC]",
+        ]] = None,
+        per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50,
+        status: Optional[List[Literal["active", "archived"]]] = None,
+        tax_category: Optional[List[TAX_CATEGORY]] = None,
+        type: Optional[Literal["custom", "standard"]] = None,
+    ) -> ProductListResponse:
         """
         Get all products.
+
+        Args
+        ----
+
+            after: Optional[str] = None
+                Return entities after the specified Paddle ID when working with paginated endpoints.
+
+            id: Optional[List[str]] = None
+                Return only the IDs specified. Use a comma-separated list to get multiple entities.
+
+            include: Optional[List[Literal["prices"]]] = None
+                Include related entities in the response. Use a comma-separated list to specify multiple entities.
+
+            order_by: Optional[Literal[str]] = None
+                Order returned entities by the specified field and direction ([ASC] or [DESC]). For example, ?order_by=id[ASC].
+
+            per_page: Optional[int] = 50
+                Set how many entities are returned per page. Paddle returns the maximum number of results if a number greater than the maximum is requested.
+                Default: 50; Maximum: 200.
+
+            status: Optional[List[Literal["active", "archived"]]] = None
+                Return entities that match the specified status. Use a comma-separated list to specify multiple status values.
+
+            tax_category: Optional[List[TAX_CATEGORY]] = None
+                Return entities that match the specified tax category. Use a comma-separated list to specify multiple tax categories.
+
+            type: Optional[Literal["custom", "standard"]] = None
+                Return items that match the specified type.
+
 
         Returns
         -------
@@ -66,7 +127,18 @@ class ProductBase(ResourceBase):
             print(products)
         """
         try:
-            response = self._list()
+            params = filter_none_kwargs(
+                after=after,
+                id=",".join(id) if id else None,
+                include=",".join(include) if include else None,
+                order_by=order_by,
+                per_page=per_page,
+                status=",".join(status) if status else None,
+                tax_category=",".join(tax_category) if tax_category else None,
+                type=type,
+            )
+            response = self._list(**params)
+
             return ProductListResponse(response)
         except PaddleAPIError as e:
             if e.status_code == 404:
@@ -166,6 +238,9 @@ class ProductBase(ResourceBase):
 
             product_id: The ID of the product to get.
 
+            include: Optional[List[Literal["prices"]]] = None
+                Include related entities in the response. Use a comma-separated list to specify multiple entities.
+
         Returns
         -------
 
@@ -190,7 +265,6 @@ class ProductBase(ResourceBase):
             print(product)
         """
         try:
-            # include need to be a comma separated list
             response = self._get(product_id, include=",".join(include) if include else None)
 
             return ProductGetResponse(response)
@@ -289,11 +363,12 @@ class Product(ProductBase):
     def __init__(self, client: Client):
         super().__init__(client)
 
-    def _list(self) -> Dict[str, Any]:
+    def _list(self, **kwargs: Any) -> Dict[str, Any]:
         """Internal method to list products."""
         return self._client._request(
             method="GET",
             path="/products",
+            params=kwargs,
         )
 
     def _create(self, **kwargs: Any) -> Dict[str, Any]:
@@ -304,12 +379,12 @@ class Product(ProductBase):
             json=kwargs,
         )
 
-    def _get(self, product_id: str, **query_params: Any) -> Dict[str, Any]:
+    def _get(self, product_id: str, **kwargs: Any) -> Dict[str, Any]:
         """Internal method to get a price."""
         return self._client._request(
             method="GET",
             path=f"/products/{product_id}",
-            params=query_params,
+            params=kwargs,
         )
 
     def _update(self, product_id: str, **kwargs: Any) -> Dict[str, Any]:
@@ -358,10 +433,68 @@ class AsyncProduct(ProductBase):
             json=kwargs,
         )
 
-    async def list(self) -> ProductListResponse:
+    async def list(
+        self,
+        *,
+        after: Optional[str] = None,
+        id: Optional[List[str]] = None,
+        include: Optional[List[Literal["prices"]]] = None,
+        order_by: Optional[Literal[
+            "created_at[ASC]",
+            "created_at[DESC]",
+            "updated_at[ASC]",
+            "updated_at[DESC]",
+            "custom_data[ASC]",
+            "custom_data[DESC]",
+            "description[ASC]",
+            "description[DESC]",
+            "id[ASC]",
+            "id[DESC]",
+            "image_url[ASC]",
+            "image_url[DESC]",
+            "name[ASC]",
+            "name[DESC]",
+            "status[ASC]",
+            "status[DESC]",
+            "tax_category[ASC]",
+            "tax_category[DESC]",
+        ]] = None,
+        per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50,
+        status: Optional[List[Literal["active", "archived"]]] = None,
+        tax_category: Optional[List[TAX_CATEGORY]] = None,
+        type: Optional[Literal["custom", "standard"]] = None,
+    ) -> ProductListResponse:
         """|coroutine|
 
         Get all products.
+
+        Args
+        ----
+
+            after: Optional[str] = None
+                Return entities after the specified Paddle ID when working with paginated endpoints.
+
+            id: Optional[List[str]] = None
+                Return only the IDs specified. Use a comma-separated list to get multiple entities.
+
+            include: Optional[List[Literal["prices"]]] = None
+                Include related entities in the response. Use a comma-separated list to specify multiple entities.
+
+            order_by: Optional[Literal[str]] = None
+                Order returned entities by the specified field and direction ([ASC] or [DESC]). For example, ?order_by=id[ASC].
+
+            per_page: Optional[int] = 50
+                Set how many entities are returned per page. Paddle returns the maximum number of results if a number greater than the maximum is requested.
+                Default: 50; Maximum: 200.
+
+            status: Optional[List[Literal["active", "archived"]]] = None
+                Return entities that match the specified status. Use a comma-separated list to specify multiple status values.
+
+            tax_category: Optional[List[TAX_CATEGORY]] = None
+                Return entities that match the specified tax category. Use a comma-separated list to specify multiple tax categories.
+
+            type: Optional[Literal["custom", "standard"]] = None
+                Return items that match the specified type.
 
         Returns
         -------
@@ -389,7 +522,18 @@ class AsyncProduct(ProductBase):
 
             asyncio.run(main())
         """
-        response = await self._list()
+        params = filter_none_kwargs(
+            after=after,
+            id=",".join(id) if id else None,
+            include=",".join(include) if include else None,
+            order_by=order_by,
+            per_page=per_page,
+            status=",".join(status) if status else None,
+            tax_category=",".join(tax_category) if tax_category else None,
+            type=type,
+        )
+        response = await self._list(**params)
+
         return ProductListResponse(response)
 
     @validate_params
@@ -489,6 +633,9 @@ class AsyncProduct(ProductBase):
         ----
 
             product_id: The ID of the product to get.
+            
+            include: Optional[List[Literal["prices"]]] = None
+                Include related entities in the response. Use a comma-separated list to specify multiple entities.
 
         Returns
         -------
@@ -517,7 +664,6 @@ class AsyncProduct(ProductBase):
             asyncio.run(main())
         """
         try:
-            # include need to be a comma separated list
             response = await self._get(product_id, include=",".join(include) if include else None)
             return ProductGetResponse(response)
         except PaddleAPIError as e:
