@@ -8,7 +8,8 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
+
+sys.path.insert(0, os.path.abspath(".."))
 
 project = "paddle-sdk"
 copyright = "2025, CCXLV"
@@ -37,6 +38,24 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
+
+# Custom CSS files
+html_css_files = [
+    "custom.css",
+]
+
+# Theme options are theme-specific and customize the look and feel of a theme
+# further.  For a list of options available for each theme, see the
+# documentation.
+html_theme_options = {
+    "navigation_depth": 4,
+    "titles_only": False,
+    "style_nav_header_background": "#2980b9",
+}
+
+# GitHub Pages specific settings
+html_baseurl = "https://ccxlv.github.io/paddle-sdk/"  # Replace with your GitHub Pages URL
+html_extra_path = ["CNAME"]  # If you want to use a custom domain
 
 # -- Extension configuration -------------------------------------------------
 

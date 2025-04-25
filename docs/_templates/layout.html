@@ -1,0 +1,39 @@
+{% extends "!layout.html" %}
+
+{% block extrahead %}
+    <link rel="icon" href="{{ pathto('_static/favicon.ico', 1) }}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Paddle SDK Documentation">
+    <meta name="keywords" content="paddle, sdk, documentation">
+    <link rel="stylesheet" href="{{ pathto('_static/custom.css', 1) }}" type="text/css">
+    {{ super() }}
+{% endblock %}
+
+{% block header %}
+    <div class="header">
+        <div class="header-container">
+            <a href="{{ pathto('index') }}">
+                <img src="{{ pathto('_static/logo.png', 1) }}" alt="Paddle Logo" class="logo">
+            </a>
+            <div class="header-title">
+                <h1>Paddle SDK Documentation</h1>
+            </div>
+        </div>
+    </div>
+    {{ super() }}
+{% endblock %}
+
+{% block footer %}
+    <div class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <p>&copy; {{ copyright }}. All rights reserved.</p>
+                <p>Paddle SDK Version {{ release }}</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/ccxlv/paddle-sdk">GitHub</a>
+            </div>
+        </div>
+    </div>
+    {{ super() }}
+{% endblock %} 
