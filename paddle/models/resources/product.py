@@ -1,3 +1,7 @@
+"""
+Paddle Products API endpoints.
+"""
+
 from typing import Union, Optional, Literal, Annotated, Dict, Any, List
 
 from pydantic import Field
