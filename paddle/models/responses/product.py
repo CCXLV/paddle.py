@@ -3,55 +3,13 @@ from typing import Optional, Literal, Dict, Any, List
 
 from pydantic import BaseModel
 
-from paddle.utils.constants import CURRENCY_CODE, COUNTRY_CODE, TAX_CATEGORY
-
-
-class Pagination(BaseModel):
-    per_page: int
-    next: str
-    has_more: bool
-    estimated_total: int
-
-
-class BillingCycle(BaseModel):
-    frequency: int
-    interval: Literal["day", "week", "month", "year"]
-
-
-class UnitPrice(BaseModel):
-    amount: str
-    currency_code: CURRENCY_CODE
-
-
-class UnitPriceOverrides(BaseModel):
-    country_codes: List[COUNTRY_CODE]
-    unit_price: UnitPrice
-
-
-class Quantity(BaseModel):
-    minimum: int
-    maximum: int
-
-
-class ImportMeta(BaseModel):
-    imported_from: Literal["paddle_classic"]
-
-
-class PriceData(BaseModel):
-    id: str
-    product_id: str
-    description: str
-    type: Literal["custom", "standard"]
-    tax_mode: Literal["account_setting", "external", "internal"]
-    unit_price: UnitPrice
-    quantity: Quantity
-    status: Literal["active", "archived"]
-    created_at: str
-    updated_at: str
-    billing_cycle: Optional[BillingCycle] = None
-    trial_period: Optional[BillingCycle] = None
-    unit_price_overrides: Optional[List[UnitPriceOverrides]] = None
-    custom_data: Optional[Dict[str, Any]] = None
+from paddle.utils.constants import TAX_CATEGORY
+from paddle.models.responses import PriceData
+from paddle.models.responses.shared import (
+    ImportMeta,
+    Meta,
+    MetaWithPagination,
+)
 
 
 class ProductData(BaseModel):
@@ -72,14 +30,6 @@ class ProductDataWithPrices(ProductData):
     prices: Optional[List[PriceData]] = None
 
 
-class ProductMeta(BaseModel):
-    request_id: str
-
-
-class ProductMetaWithPagination(ProductMeta):
-    pagination: Pagination
-
-
 @dataclass
 class ProductListResponse:
     """
@@ -87,11 +37,11 @@ class ProductListResponse:
     """
 
     data: List[ProductDataWithPrices]
-    meta: ProductMetaWithPagination
+    meta: MetaWithPagination
 
     def __init__(self, response: Dict[str, Any]):
         self.data = [ProductDataWithPrices(**item) for item in response["data"]]
-        self.meta = ProductMetaWithPagination(**response["meta"])
+        self.meta = MetaWithPagination(**response["meta"])
 
 
 @dataclass
@@ -101,11 +51,11 @@ class ProductCreateResponse:
     """
 
     data: ProductData
-    meta: ProductMeta
+    meta: Meta
 
     def __init__(self, response: Dict[str, Any]):
         self.data = ProductData(**response["data"])
-        self.meta = ProductMeta(**response["meta"])
+        self.meta = Meta(**response["meta"])
 
 
 @dataclass
@@ -115,8 +65,8 @@ class ProductGetResponse:
     """
 
     data: ProductDataWithPrices
-    meta: ProductMeta
+    meta: Meta
 
     def __init__(self, response: Dict[str, Any]):
         self.data = ProductDataWithPrices(**response["data"])
-        self.meta = ProductMeta(**response["meta"])
+        self.meta = Meta(**response["meta"])
