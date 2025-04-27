@@ -63,3 +63,6 @@ class PriceListResponse:
     def __init__(self, response: Dict[str, Any]):
         self.data = [PriceDataWithProduct(**item) for item in response["data"]]
         self.meta = MetaWithPagination(**response["meta"])
+
+
+# TODO: Add GET, CREATE, UPDATE responses

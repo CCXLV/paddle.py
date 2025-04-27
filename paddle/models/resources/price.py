@@ -75,6 +75,8 @@ class PriceBase(ResourceBase):
         recurring: Optional[bool] = None,
         type: Optional[Literal["custom", "standard"]] = None,
     ) -> PriceListResponse:
+        # TODO: Add docstrings
+
         params = filter_none_kwargs(
             after=after,
             id=",".join(id) if id else None,
@@ -91,10 +93,16 @@ class PriceBase(ResourceBase):
         return PriceListResponse(response)
 
     def create(self):
+        # TODO
         pass
 
     def get(self):
+        # TODO
         pass
 
     def update(self):
+        # TODO
         pass
+
+
+# TODO: Add sync and async versions
