@@ -1,15 +1,17 @@
 from dataclasses import dataclass
-from typing import Optional, Literal, Dict, Any, List
+from typing import Optional, Literal, Dict, Any, List, TYPE_CHECKING
 
 from pydantic import BaseModel
 
 from paddle.utils.constants import TAX_CATEGORY
-from paddle.models.responses import PriceData
 from paddle.models.responses.shared import (
     ImportMeta,
     Meta,
     MetaWithPagination,
 )
+
+if TYPE_CHECKING:
+    from paddle.models.responses.price import PriceData
 
 
 class ProductData(BaseModel):
@@ -27,7 +29,7 @@ class ProductData(BaseModel):
 
 
 class ProductDataWithPrices(ProductData):
-    prices: Optional[List[PriceData]] = None
+    prices: Optional[List["PriceData"]] = None
 
 
 @dataclass

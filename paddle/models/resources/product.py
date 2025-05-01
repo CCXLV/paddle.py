@@ -378,7 +378,7 @@ class Product(ProductBase):
         )
 
     def _create(self, **kwargs: Any) -> Dict[str, Any]:
-        """Internal method to create a price."""
+        """Internal method to create a product."""
         return self._client._request(
             method="POST",
             path="/products",
@@ -386,7 +386,7 @@ class Product(ProductBase):
         )
 
     def _get(self, product_id: str, **kwargs: Any) -> Dict[str, Any]:
-        """Internal method to get a price."""
+        """Internal method to get a product."""
         return self._client._request(
             method="GET",
             path=f"/products/{product_id}",
