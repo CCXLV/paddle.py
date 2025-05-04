@@ -40,11 +40,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [x] Get
   - [x] Update
 
-- [ ] Prices
-  - [ ] List
-  - [ ] Create
-  - [ ] Get
-  - [ ] Update
+- [x] Prices
+  - [x] List
+  - [x] Create
+  - [x] Get
+  - [x] Update
 
 - [ ] Discounts
   - [ ] List
