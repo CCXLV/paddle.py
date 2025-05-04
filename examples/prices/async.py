@@ -21,6 +21,15 @@ async def main():
         prices = await client.price.list(include=["product"])
         print(prices.data)
 
+        price = await client.price.update(
+            "pri_1234567890",
+            description="Test",
+        )
+        print(price)
+
+        price = await client.price.get("pri_1234567890")
+        print(price)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

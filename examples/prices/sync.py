@@ -13,4 +13,13 @@ price = client.price.create(
 print(price)
 
 prices = client.price.list(include=["product"])
-print(prices.data)
+print(prices)
+
+price = client.price.update(
+    "pri_1234567890",
+    description="Test",
+)
+print(price)
+
+price = client.price.get("pri_1234567890")
+print(price)
