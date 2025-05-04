@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Literal, Optional, List, Dict, Any, TYPE_CHECKING
+from typing import Literal, Optional, List, Dict, Any, TYPE_CHECKING, TypedDict
 
 from pydantic import BaseModel
 
@@ -10,6 +10,28 @@ if TYPE_CHECKING:
     from paddle.models.responses.product import ProductData
 
 
+# Types
+class BillingCycleType(TypedDict):
+    frequency: int
+    interval: Literal["day", "week", "month", "year"]
+
+
+class UnitPriceType(TypedDict):
+    amount: str
+    currency_code: CURRENCY_CODE
+
+
+class UnitPriceOverridesType(TypedDict):
+    country_codes: List[COUNTRY_CODE]
+    unit_price: UnitPriceType
+
+
+class QuantityType(TypedDict):
+    minimum: int
+    maximum: int
+
+
+# BaseModels
 class BillingCycle(BaseModel):
     frequency: int
     interval: Literal["day", "week", "month", "year"]
@@ -81,4 +103,29 @@ class PriceCreateResponse:
         self.meta = Meta(**response["meta"])
 
 
-# TODO: Add GET, UPDATE responses
+@dataclass
+class PriceGetResponse:
+    """
+    Response for the Price Get endpoint.
+    """
+
+    data: PriceDataWithProduct
+    meta: Meta
+
+    def __init__(self, response: Dict[str, Any]):
+        self.data = PriceDataWithProduct(**response["data"])
+        self.meta = Meta(**response["meta"])
+
+
+@dataclass
+class PriceUpdateResponse:
+    """
+    Response for the Price Update endpoint.
+    """
+
+    data: PriceData
+    meta: Meta
+
+    def __init__(self, response: Dict[str, Any]):
+        self.data = PriceData(**response["data"])
+        self.meta = Meta(**response["meta"])

@@ -13,10 +13,12 @@ from paddle.models.resources.base import ResourceBase
 from paddle.models.responses.price import (
     PriceListResponse,
     PriceCreateResponse,
-    UnitPrice,
-    BillingCycle,
-    UnitPriceOverrides,
-    Quantity,
+    PriceGetResponse,
+    PriceUpdateResponse,
+    UnitPriceType,
+    BillingCycleType,
+    UnitPriceOverridesType,
+    QuantityType,
 )
 
 from paddle.utils.decorators import validate_params
@@ -84,7 +86,67 @@ class PriceBase(ResourceBase):
         recurring: Optional[bool] = None,
         type: Optional[Literal["custom", "standard"]] = None,
     ) -> PriceListResponse:
-        # TODO: Add docstrings
+        """
+        List prices.
+
+        Parameters
+        ----------
+
+            after: Optional[str] = None
+                Return entities after the specified Paddle ID when working with paginated endpoints.
+
+            id: Optional[List[str]] = None
+                Return only the IDs specified.
+
+            include: Optional[List[Literal["product"]]] = None
+                Include related entities in the response.
+
+            order_by: Optional[
+                Literal[
+                    "billing_cycle.frequency[ASC]",
+                    "billing_cycle.frequency[DESC]",
+                    ...
+                ]
+            ] = None
+                Order returned entities by the specified field and direction ([ASC] or [DESC]).
+
+            per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50
+                Set how many entities are returned per page.
+                Default: 50; Maximum: 200.
+
+            product_id: Optional[List[str]] = None
+                The IDs of the products to list.
+
+            status: Optional[List[Literal["active", "archived"]]] = None
+                Return entities that match the specified status. Use a comma-separated list to specify multiple status values.
+
+            recurring: Optional[bool] = None
+                Return entities that match the specified recurring status.
+
+            type: Optional[Literal["custom", "standard"]] = None
+                Return entities that match the specified type.
+
+        Returns
+        -------
+
+            A list of prices.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the price is not found.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            prices = client.prices.list()
+            print(prices)
+
+        """
 
         params = filter_none_kwargs(
             after=after,
@@ -107,22 +169,87 @@ class PriceBase(ResourceBase):
         *,
         description: str,
         product_id: str,
-        unit_price: Union[UnitPrice, Dict[str, str]],
+        unit_price: Union[UnitPriceType, Dict[str, str]],
         type: Optional[str] = None,
-        billing_cycle: Optional[Union[BillingCycle, Dict[str, str]]] = None,
-        trial_period: Optional[Union[BillingCycle, Dict[str, str]]] = None,
+        name: Optional[str] = None,
+        billing_cycle: Optional[BillingCycleType] = None,
+        trial_period: Optional[BillingCycleType] = None,
         tax_mode: Optional[Literal["account_setting", "external", "internal"]] = None,
-        unit_price_overrides: Optional[List[UnitPriceOverrides]] = None,
-        quantity: Optional[Quantity] = None,
+        unit_price_overrides: Optional[List[UnitPriceOverridesType]] = None,
+        quantity: Optional[QuantityType] = None,
         custom_data: Optional[Dict[str, str]] = None,
-    ):
-        # TODO: Add docstrings
+    ) -> PriceCreateResponse:
+        """
+        Create a price.
+
+        Parameters
+        ----------
+
+            description: str
+               Internal description for this price, not shown to customers. Typically notes for your team.
+
+            product_id: str
+                Paddle ID for the product that this price is for, prefixed with `pro_`.
+
+            unit_price: Union[UnitPriceType, Dict[str, str]]
+                Base price. This price applies to all customers, except for customers located in countries where you have unit_price_overrides.
+
+            type: Optional[str] = None
+                The type of the price.
+
+            name: Optional[str] = None
+                Name of this price, shown to customers at checkout and on invoices.
+
+            billing_cycle: Optional[BillingCycleType] = None
+                How often this price should be charged.
+
+            trial_period: Optional[BillingCycleType] = None
+                Trial period for the product related to this price. The billing cycle begins once the trial period is over. null for no trial period. Requires billing_cycle. If omitted, defaults to null.
+
+            tax_mode: Optional[Literal["account_setting", "external", "internal"]] = None
+                How tax is calculated for this price.
+
+            unit_price_overrides: Optional[List[UnitPriceOverridesType]] = None
+                Limits on how many times the related product can be purchased at this price.
+
+            quantity: Optional[QuantityType] = None
+                The quantity of the price.
+
+            custom_data: Optional[Dict[str, str]] = None
+                Arbitrary data you can store with this price.
+
+        Returns
+        -------
+
+            A price.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the price is not found.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            price = client.prices.create(
+                description="My Price",
+                product_id="prod_1234567890",
+                unit_price=100,
+                type="standard",
+            )
+            print(price)
+        """
 
         kwargs = filter_none_kwargs(
             description=description,
             product_id=product_id,
             unit_price=unit_price,
             type=type,
+            name=name,
             billing_cycle=billing_cycle,
             trial_period=trial_period,
             tax_mode=tax_mode,
@@ -134,13 +261,145 @@ class PriceBase(ResourceBase):
 
         return PriceCreateResponse(response)
 
-    def get(self):
-        # TODO
-        pass
+    @validate_params
+    def get(
+        self,
+        price_id: str,
+        *,
+        include: Optional[List[Literal["product"]]] = None,
+    ) -> PriceGetResponse:
+        """
+        Get a price.
 
-    def update(self):
-        # TODO
-        pass
+        Parameters
+        ----------
+
+            price_id: str
+                The ID of the price to get.
+
+            include: Optional[List[Literal["product"]]] = None
+                Include related entities in the response.
+
+        Returns
+        -------
+
+            A price.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the price is not found.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            price = client.prices.get(price_id="pri_1234567890")
+            print(price)
+        """
+
+        kwargs = filter_none_kwargs(include=",".join(include) if include else None)
+        response = self._get(price_id, **kwargs)
+
+        return PriceGetResponse(response)
+
+    @validate_params
+    def update(
+        self,
+        price_id: str,
+        *,
+        description: Optional[str] = None,
+        type: Optional[str] = None,
+        name: Optional[str] = None,
+        billing_cycle: Optional[BillingCycleType] = None,
+        trial_period: Optional[BillingCycleType] = None,
+        tax_mode: Optional[Literal["account_setting", "external", "internal"]] = None,
+        unit_price_overrides: Optional[List[UnitPriceOverridesType]] = None,
+        quantity: Optional[QuantityType] = None,
+        status: Optional[Literal["active", "archived"]] = None,
+        custom_data: Optional[Dict[str, str]] = None,
+    ) -> PriceUpdateResponse:
+        """
+        Update a price.
+
+        Parameters
+        ----------
+
+            price_id: str
+                The ID of the price to update.
+
+            description: Optional[str] = None
+                Internal description for this price, not shown to customers. Typically notes for your team.
+
+            type: Optional[str] = None
+                The type of the price.
+
+            name: Optional[str] = None
+                Name of this price, shown to customers at checkout and on invoices.
+
+            billing_cycle: Optional[BillingCycleType] = None
+                How often this price should be charged.
+
+            trial_period: Optional[BillingCycleType] = None
+                Trial period for the product related to this price. The billing cycle begins once the trial period is over. null for no trial period. Requires billing_cycle. If omitted, defaults to null.
+
+            tax_mode: Optional[Literal["account_setting", "external", "internal"]] = None
+                How tax is calculated for this price.
+
+            unit_price_overrides: Optional[List[UnitPriceOverridesType]] = None
+                Limits on how many times the related product can be purchased at this price.
+
+            quantity: Optional[QuantityType] = None
+                The quantity of the price.
+
+            status: Optional[Literal["active", "archived"]] = None
+                The status of the price.
+
+            custom_data: Optional[Dict[str, str]] = None
+                Arbitrary data you can store with this price.
+
+        Returns
+        -------
+
+            Updated price.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the price is not found.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            price = client.prices.update(
+                price_id="pri_1234567890",
+                description="My Updated Price",
+            )
+            print(price)
+        """
+
+        kwargs = filter_none_kwargs(
+            description=description,
+            type=type,
+            name=name,
+            billing_cycle=billing_cycle,
+            trial_period=trial_period,
+            tax_mode=tax_mode,
+            unit_price_overrides=unit_price_overrides,
+            quantity=quantity,
+            status=status,
+            custom_data=custom_data,
+        )
+        response = self._update(price_id, **kwargs)
+
+        return PriceUpdateResponse(response)
 
 
 class Price(PriceBase):
@@ -165,6 +424,22 @@ class Price(PriceBase):
             json=kwargs,
         )
 
+    def _get(self, price_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to get a price."""
+        return self._client._request(
+            method="GET",
+            path=f"/prices/{price_id}",
+            params=kwargs,
+        )
+
+    def _update(self, price_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to update a price."""
+        return self._client._request(
+            method="PATCH",
+            path=f"/prices/{price_id}",
+            json=kwargs,
+        )
+
 
 class AsyncPrice(PriceBase):
     """Resource for Paddle Prices API endpoints."""
@@ -185,6 +460,22 @@ class AsyncPrice(PriceBase):
         return await self._client._request(
             method="POST",
             path="/prices",
+            json=kwargs,
+        )
+
+    async def _get(self, price_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to get a price."""
+        return await self._client._request(
+            method="GET",
+            path=f"/prices/{price_id}",
+            params=kwargs,
+        )
+
+    async def _update(self, price_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to update a price."""
+        return await self._client._request(
+            method="PATCH",
+            path=f"/prices/{price_id}",
             json=kwargs,
         )
 
@@ -225,7 +516,72 @@ class AsyncPrice(PriceBase):
         recurring: Optional[bool] = None,
         type: Optional[Literal["custom", "standard"]] = None,
     ) -> PriceListResponse:
-        # TODO: Add docstrings
+        """|coroutine|
+
+        List prices.
+
+        Parameters
+        ----------
+
+            after: Optional[str] = None
+                Return entities after the specified Paddle ID when working with paginated endpoints.
+
+            id: Optional[List[str]] = None
+                Return only the IDs specified.
+
+            include: Optional[List[Literal["product"]]] = None
+                Include related entities in the response.
+
+            order_by: Optional[
+                Literal[
+                    "billing_cycle.frequency[ASC]",
+                    "billing_cycle.frequency[DESC]",
+                    ...
+                ]
+            ] = None
+                Order returned entities by the specified field and direction ([ASC] or [DESC]).
+
+            per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50
+                Set how many entities are returned per page.
+                Default: 50; Maximum: 200.
+
+            product_id: Optional[List[str]] = None
+                The IDs of the products to list.
+
+            status: Optional[List[Literal["active", "archived"]]] = None
+                Return entities that match the specified status. Use a comma-separated list to specify multiple status values.
+
+            recurring: Optional[bool] = None
+                Return entities that match the specified recurring status.
+
+            type: Optional[Literal["custom", "standard"]] = None
+                Return entities that match the specified type.
+
+        Returns
+        -------
+
+            A list of prices.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the price is not found.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    prices = await client.prices.list()
+                    print(prices)
+
+            asyncio.run(main())
+
+        """
 
         params = filter_none_kwargs(
             after=after,
@@ -248,22 +604,92 @@ class AsyncPrice(PriceBase):
         *,
         description: str,
         product_id: str,
-        unit_price: Union[UnitPrice, Dict[str, str]],
+        unit_price: Union[UnitPriceType, Dict[str, str]],
         type: Optional[str] = None,
-        billing_cycle: Optional[Union[BillingCycle, Dict[str, str]]] = None,
-        trial_period: Optional[Union[BillingCycle, Dict[str, str]]] = None,
+        name: Optional[str] = None,
+        billing_cycle: Optional[BillingCycleType] = None,
+        trial_period: Optional[BillingCycleType] = None,
         tax_mode: Optional[Literal["account_setting", "external", "internal"]] = None,
-        unit_price_overrides: Optional[List[UnitPriceOverrides]] = None,
-        quantity: Optional[Quantity] = None,
+        unit_price_overrides: Optional[List[UnitPriceOverridesType]] = None,
+        quantity: Optional[QuantityType] = None,
         custom_data: Optional[Dict[str, str]] = None,
-    ):
-        # TODO: Add docstrings
+    ) -> PriceCreateResponse:
+        """|coroutine|
+
+        Create a price.
+
+        Parameters
+        ----------
+
+            description: str
+               Internal description for this price, not shown to customers. Typically notes for your team.
+
+            product_id: str
+                Paddle ID for the product that this price is for, prefixed with `pro_`.
+
+            unit_price: Union[UnitPriceType, Dict[str, str]]
+                Base price. This price applies to all customers, except for customers located in countries where you have unit_price_overrides.
+
+            type: Optional[str] = None
+                The type of the price.
+
+            name: Optional[str] = None
+                Name of this price, shown to customers at checkout and on invoices.
+
+            billing_cycle: Optional[BillingCycleType] = None
+                How often this price should be charged.
+
+            trial_period: Optional[BillingCycleType] = None
+                Trial period for the product related to this price. The billing cycle begins once the trial period is over. null for no trial period. Requires billing_cycle. If omitted, defaults to null.
+
+            tax_mode: Optional[Literal["account_setting", "external", "internal"]] = None
+                How tax is calculated for this price.
+
+            unit_price_overrides: Optional[List[UnitPriceOverridesType]] = None
+                Limits on how many times the related product can be purchased at this price.
+
+            quantity: Optional[QuantityType] = None
+                The quantity of the price.
+
+            custom_data: Optional[Dict[str, str]] = None
+                Arbitrary data you can store with this price.
+
+        Returns
+        -------
+
+           A price.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the price is not found.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    price = await client.prices.create(
+                        description="My Price",
+                        product_id="prod_1234567890",
+                        unit_price=100,
+                        type="standard",
+                    )
+                    print(price)
+
+            asyncio.run(main())
+        """
 
         kwargs = filter_none_kwargs(
             description=description,
             product_id=product_id,
             unit_price=unit_price,
             type=type,
+            name=name,
             billing_cycle=billing_cycle,
             trial_period=trial_period,
             tax_mode=tax_mode,
@@ -274,3 +700,151 @@ class AsyncPrice(PriceBase):
         response = await self._create(**kwargs)
 
         return PriceCreateResponse(response)
+
+    @validate_params
+    async def get(
+        self,
+        price_id: str,
+        *,
+        include: Optional[List[Literal["product"]]] = None,
+    ) -> PriceGetResponse:
+        """
+        Get a price.
+
+        Parameters
+        ----------
+
+            price_id: str
+                The ID of the price to get.
+
+            include: Optional[List[Literal["product"]]] = None
+                Include related entities in the response.
+
+        Returns
+        -------
+
+            A price.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the price is not found.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    price = await client.prices.get(price_id="pri_1234567890")
+                    print(price)
+
+            asyncio.run(main())
+        """
+
+        kwargs = filter_none_kwargs(include=",".join(include) if include else None)
+        response = await self._get(price_id, **kwargs)
+
+        return PriceGetResponse(response)
+
+    @validate_params
+    async def update(
+        self,
+        price_id: str,
+        *,
+        description: Optional[str] = None,
+        type: Optional[str] = None,
+        name: Optional[str] = None,
+        billing_cycle: Optional[BillingCycleType] = None,
+        trial_period: Optional[BillingCycleType] = None,
+        tax_mode: Optional[Literal["account_setting", "external", "internal"]] = None,
+        unit_price_overrides: Optional[List[UnitPriceOverridesType]] = None,
+        quantity: Optional[QuantityType] = None,
+        status: Optional[Literal["active", "archived"]] = None,
+        custom_data: Optional[Dict[str, str]] = None,
+    ) -> PriceUpdateResponse:
+        """
+        Update a price.
+
+        Parameters
+        ----------
+
+            price_id: str
+                The ID of the price to update.
+
+            description: Optional[str] = None
+                Internal description for this price, not shown to customers. Typically notes for your team.
+
+            type: Optional[str] = None
+                The type of the price.
+
+            name: Optional[str] = None
+                Name of this price, shown to customers at checkout and on invoices.
+
+            billing_cycle: Optional[BillingCycleType] = None
+                How often this price should be charged.
+
+            trial_period: Optional[BillingCycleType] = None
+                Trial period for the product related to this price. The billing cycle begins once the trial period is over. null for no trial period. Requires billing_cycle. If omitted, defaults to null.
+
+            tax_mode: Optional[Literal["account_setting", "external", "internal"]] = None
+                How tax is calculated for this price.
+
+            unit_price_overrides: Optional[List[UnitPriceOverridesType]] = None
+                Limits on how many times the related product can be purchased at this price.
+
+            quantity: Optional[QuantityType] = None
+                The quantity of the price.
+
+            status: Optional[Literal["active", "archived"]] = None
+                The status of the price.
+
+            custom_data: Optional[Dict[str, str]] = None
+                Arbitrary data you can store with this price.
+
+        Returns
+        -------
+
+            Updated price.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the price is not found.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    price = await client.prices.update(
+                        price_id="pri_1234567890",
+                        description="My Updated Price",
+                    )
+                    print(price)
+
+            asyncio.run(main())
+        """
+
+        kwargs = filter_none_kwargs(
+            description=description,
+            type=type,
+            name=name,
+            billing_cycle=billing_cycle,
+            trial_period=trial_period,
+            tax_mode=tax_mode,
+            unit_price_overrides=unit_price_overrides,
+            quantity=quantity,
+            status=status,
+            custom_data=custom_data,
+        )
+        response = await self._update(price_id, **kwargs)
+
+        return PriceUpdateResponse(response)

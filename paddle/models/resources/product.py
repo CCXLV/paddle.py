@@ -80,23 +80,23 @@ class ProductBase(ResourceBase):
         """
         Get all products.
 
-        Args
-        ----
+        Parameters
+        ----------
 
             after: Optional[str] = None
                 Return entities after the specified Paddle ID when working with paginated endpoints.
 
             id: Optional[List[str]] = None
-                Return only the IDs specified. Use a comma-separated list to get multiple entities.
+                Return only the IDs specified.
 
             include: Optional[List[Literal["prices"]]] = None
-                Include related entities in the response. Use a comma-separated list to specify multiple entities.
+                Include related entities in the response.
 
             order_by: Optional[Literal[str]] = None
-                Order returned entities by the specified field and direction ([ASC] or [DESC]). For example, ?order_by=id[ASC].
+                Order returned entities by the specified field and direction ([ASC] or [DESC]).
 
             per_page: Optional[int] = 50
-                Set how many entities are returned per page. Paddle returns the maximum number of results if a number greater than the maximum is requested.
+                Set how many entities are returned per page.
                 Default: 50; Maximum: 200.
 
             status: Optional[List[Literal["active", "archived"]]] = None
@@ -112,13 +112,13 @@ class ProductBase(ResourceBase):
         Returns
         -------
 
-        A list of products.
+            A list of products.
 
         Raises
         ------
 
-        PaddleAPIError: If the API request fails.
-        PaddleNotFoundError: If the product is not found.
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the product is not found.
 
         Examples
         --------
@@ -147,8 +147,8 @@ class ProductBase(ResourceBase):
 
             return ProductListResponse(response)
         except PaddleAPIError as e:
-            if e.status_code == 404:
-                raise PaddleNotFoundError("No products found") from e
+            if e.status_code == 422:
+                raise PaddleValidationError(e.message) from e
             raise
 
     @validate_params
@@ -165,36 +165,37 @@ class ProductBase(ResourceBase):
         """
         Create a new product.
 
-        Args
-        ---- ::
+        Parameters
+        ----------
 
             name: str
-            tax_category: Literal[
-                "digital-goods",
-                "ebooks",
-                "implementation-services",
-                "professional-services",
-                "saas",
-                "software-programming-services",
-                "standard",
-                "training-services",
-                "website-hosting",
-            ]
+                The name of the product.
+
+            tax_category: TAX_CATEGORY
+                Tax category for this product. Used for charging the correct rate of tax. Selected tax category must be enabled on your Paddle account.
+
             description: Optional[str] = None
+                Short description for this product.
+
             type: Optional[Literal["custom", "standard"]] = None
+                The type of the product.
+
             image_url: Optional[str] = None
+                The image URL of the product.
+
             custom_data: Optional[Dict[str, Any]] = None
+                Arbitrary data you can store with this product.
 
         Returns
         -------
 
-        A new product.
+            A new product.
 
         Raises
         ------
 
-        PaddleAPIError: If the API request fails.
-        PaddleValidationError: If the product is not valid.
+            PaddleAPIError: If the API request fails.
+            PaddleValidationError: If the product is not valid.
 
         Examples
         --------
@@ -239,24 +240,24 @@ class ProductBase(ResourceBase):
         """
         Gets a product by ID.
 
-        Args
-        ----
+        Parameters
+        ----------
 
             product_id: The ID of the product to get.
 
             include: Optional[List[Literal["prices"]]] = None
-                Include related entities in the response. Use a comma-separated list to specify multiple entities.
+                Include related entities in the response.
 
         Returns
         -------
 
-        A product by ID.
+            A product by ID.
 
         Raises
         ------
 
-        PaddleAPIError: If the API request fails.
-        PaddleNotFoundError: If the product is not found.
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the product is not found.
 
         Examples
         --------
@@ -295,37 +296,40 @@ class ProductBase(ResourceBase):
         """
         Update a product.
 
-        Args
-        ---- ::
+        Parameters
+        ----------
 
             name: Optional[str] = None
+                The name of the product.
+
             description: Optional[str] = None
+                Short description for this product.
+
             type: Optional[Literal["custom", "standard"]] = None
-            tax_category: Optional[Literal[
-                "digital-goods",
-                "ebooks",
-                "implementation-services",
-                "professional-services",
-                "saas",
-                "software-programming-services",
-                "standard",
-                "training-services",
-                "website-hosting",
-            ]] = None
+                The type of the product.
+
+            tax_category: Optional[TAX_CATEGORY] = None
+                Tax category for this product. Used for charging the correct rate of tax. Selected tax category must be enabled on your Paddle account.
+
             image_url: Optional[str] = None
+                The image URL of the product.
+
             custom_data: Optional[Dict[str, Any]] = None
+                Arbitrary data you can store with this product.
+
             status: Optional[Literal["active", "archived"]] = None
+                Whether this entity can be used in Paddle.
 
         Returns
         -------
 
-        Updated product.
+            Updated product.
 
         Raises
         ------
 
-        PaddleAPIError: If the API request fails.
-        PaddleValidationError: If the product is not valid.
+            PaddleAPIError: If the API request fails.
+            PaddleValidationError: If the product is not valid.
 
         Examples
         --------
@@ -476,23 +480,23 @@ class AsyncProduct(ProductBase):
 
         Get all products.
 
-        Args
-        ----
+        Parameters
+        ----------
 
             after: Optional[str] = None
                 Return entities after the specified Paddle ID when working with paginated endpoints.
 
             id: Optional[List[str]] = None
-                Return only the IDs specified. Use a comma-separated list to get multiple entities.
+                Return only the IDs specified.
 
             include: Optional[List[Literal["prices"]]] = None
-                Include related entities in the response. Use a comma-separated list to specify multiple entities.
+                Include related entities in the response.
 
             order_by: Optional[Literal[str]] = None
-                Order returned entities by the specified field and direction ([ASC] or [DESC]). For example, ?order_by=id[ASC].
+                Order returned entities by the specified field and direction ([ASC] or [DESC]).
 
             per_page: Optional[int] = 50
-                Set how many entities are returned per page. Paddle returns the maximum number of results if a number greater than the maximum is requested.
+                Set how many entities are returned per page.
                 Default: 50; Maximum: 200.
 
             status: Optional[List[Literal["active", "archived"]]] = None
@@ -507,18 +511,16 @@ class AsyncProduct(ProductBase):
         Returns
         -------
 
-        A list of products.
+            A list of products.
 
         Raises
         ------
 
-        PaddleAPIError: If the API request fails.
-        PaddleNotFoundError: If the product is not found.
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the product is not found.
 
-        Examples
-        --------
-
-        Getting all products ::
+        Example
+        -------- ::
 
             import asyncio
             from paddle.aio import AsyncClient
@@ -530,19 +532,24 @@ class AsyncProduct(ProductBase):
 
             asyncio.run(main())
         """
-        params = filter_none_kwargs(
-            after=after,
-            id=",".join(id) if id else None,
-            include=",".join(include) if include else None,
-            order_by=order_by,
-            per_page=per_page,
-            status=",".join(status) if status else None,
-            tax_category=",".join(tax_category) if tax_category else None,
-            type=type,
-        )
-        response = await self._list(**params)
+        try:
+            params = filter_none_kwargs(
+                after=after,
+                id=",".join(id) if id else None,
+                include=",".join(include) if include else None,
+                order_by=order_by,
+                per_page=per_page,
+                status=",".join(status) if status else None,
+                tax_category=",".join(tax_category) if tax_category else None,
+                type=type,
+            )
+            response = await self._list(**params)
 
-        return ProductListResponse(response)
+            return ProductListResponse(response)
+        except PaddleAPIError as e:
+            if e.status_code == 422:
+                raise PaddleValidationError(e.message) from e
+            raise
 
     @validate_params
     async def create(
@@ -559,41 +566,40 @@ class AsyncProduct(ProductBase):
 
         Create a new product.
 
-        Args
-        ---- ::
+        Parameters
+        ----------
 
             name: str
-            tax_category: Literal[
-                "digital-goods",
-                "ebooks",
-                "implementation-services",
-                "professional-services",
-                "saas",
-                "software-programming-services",
-                "standard",
-                "training-services",
-                "website-hosting",
-            ]
+                The name of the product.
+
+            tax_category: TAX_CATEGORY
+                Tax category for this product. Used for charging the correct rate of tax. Selected tax category must be enabled on your Paddle account.
+
             description: Optional[str] = None
+                Short description for this product.
+
             type: Optional[Literal["custom", "standard"]] = None
+                The type of the product.
+
             image_url: Optional[str] = None
+                The image URL of the product.
+
             custom_data: Optional[Dict[str, Any]] = None
+                Arbitrary data you can store with this product.
 
         Returns
         -------
 
-        A new product.
+            A new product.
 
         Raises
         ------
 
-        PaddleAPIError: If the API request fails.
-        PaddleValidationError: If the product is not valid.
+            PaddleAPIError: If the API request fails.
+            PaddleValidationError: If the product is not valid.
 
-        Examples
-        --------
-
-        Creating a new product ::
+        Example
+        -------- ::
 
             import asyncio
             from paddle.aio import AsyncClient
@@ -637,13 +643,13 @@ class AsyncProduct(ProductBase):
 
         Gets a product by ID.
 
-        Args
-        ----
+        Parameters
+        ----------
 
             product_id: The ID of the product to get.
 
             include: Optional[List[Literal["prices"]]] = None
-                Include related entities in the response. Use a comma-separated list to specify multiple entities.
+                Include related entities in the response.
 
         Returns
         -------
@@ -653,13 +659,11 @@ class AsyncProduct(ProductBase):
         Raises
         ------
 
-        PaddleAPIError: If the API request fails.
-        PaddleNotFoundError: If the product is not found.
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the product is not found.
 
-        Examples
-        --------
-
-        Getting a product by ID ::
+        Example
+        -------- ::
 
             import asyncio
             from paddle.aio import AsyncClient
@@ -696,42 +700,43 @@ class AsyncProduct(ProductBase):
 
         Update a product.
 
-        Args
-        ---- ::
+        Parameters
+        ----------
 
             name: Optional[str] = None
+                The name of the product.
+
             description: Optional[str] = None
+                Short description for this product.
+
             type: Optional[Literal["custom", "standard"]] = None
-            tax_category: Optional[Literal[
-                "digital-goods",
-                "ebooks",
-                "implementation-services",
-                "professional-services",
-                "saas",
-                "software-programming-services",
-                "standard",
-                "training-services",
-                "website-hosting",
-            ]] = None
+                The type of the product.
+
+            tax_category: Optional[TAX_CATEGORY] = None
+                Tax category for this product. Used for charging the correct rate of tax. Selected tax category must be enabled on your Paddle account.
+
             image_url: Optional[str] = None
+                The image URL of the product.
+
             custom_data: Optional[Dict[str, Any]] = None
+                Arbitrary data you can store with this product.
+
             status: Optional[Literal["active", "archived"]] = None
+                Whether this entity can be used in Paddle.
 
         Returns
         -------
 
-        Updated product.
+            Updated product.
 
         Raises
         ------
 
-        PaddleAPIError: If the API request fails.
-        PaddleValidationError: If the product is not valid.
+            PaddleAPIError: If the API request fails.
+            PaddleValidationError: If the product is not valid.
 
-        Examples
-        --------
-
-        Updating a product ::
+        Example
+        -------- ::
 
             import asyncio
             from paddle.aio import AsyncClient
