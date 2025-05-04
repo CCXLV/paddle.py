@@ -7,7 +7,7 @@ client = Client(
 
 price = client.price.create(
     description="Test",
-    product_id="pro_01jsj3zepax5fk3enjsevsd8ra",
+    product_id="pro_1234567890",
     unit_price={"amount": "10", "currency_code": "USD"},
 )
 print(price)
