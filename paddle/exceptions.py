@@ -29,10 +29,10 @@ class PaddleNotFoundError(PaddleAPIError):
 
 
 class PaddleValidationError(PaddleAPIError):
-    """Exception raised for validation errors (422)."""
+    """Exception raised for validation errors (400)."""
 
     def __init__(self, message: str):
-        super().__init__(422, message)
+        super().__init__(400, message)
 
 
 class PaddleRateLimitError(PaddleAPIError):
@@ -49,6 +49,13 @@ class PaddleServerError(PaddleAPIError):
         super().__init__(status_code, message)
 
 
+class PaddleConflictError(PaddleAPIError):
+    """Exception raised for conflict errors (409)."""
+
+    def __init__(self, message: str):
+        super().__init__(409, message)
+
+
 def create_paddle_error(status_code: int, message: str) -> PaddleAPIError:
     """Factory function to create the appropriate Paddle error based on status code."""
     if status_code == 401:
@@ -56,8 +63,8 @@ def create_paddle_error(status_code: int, message: str) -> PaddleAPIError:
     elif status_code == 403:
         return PaddlePermissionError(message)
     elif status_code == 404:
-        return PaddleNotFoundError(message)
-    elif status_code == 422:
+        return None
+    elif status_code == 400:
         return PaddleValidationError(message)
     elif status_code == 429:
         return PaddleRateLimitError(message)

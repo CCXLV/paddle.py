@@ -9,7 +9,6 @@ from .environment import Environment
 from .exceptions import create_paddle_error
 from .utils import is_retryable_status_code, get_retry_delay
 
-
 # Type variable for resource classes
 T = TypeVar("T")
 

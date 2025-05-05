@@ -19,7 +19,7 @@ from paddle.models.responses.product import (
 from paddle.utils.decorators import validate_params
 from paddle.utils.constants import TAX_CATEGORY
 from paddle.utils.helpers import filter_none_kwargs
-from paddle.exceptions import PaddleAPIError, PaddleValidationError, PaddleNotFoundError
+from paddle.exceptions import PaddleAPIError, create_paddle_error
 
 
 class ProductBase(ResourceBase):
@@ -147,9 +147,7 @@ class ProductBase(ResourceBase):
 
             return ProductListResponse(response)
         except PaddleAPIError as e:
-            if e.status_code == 422:
-                raise PaddleValidationError(e.message) from e
-            raise
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     def create(
@@ -226,9 +224,7 @@ class ProductBase(ResourceBase):
 
             return ProductCreateResponse(response)
         except PaddleAPIError as e:
-            if e.status_code == 422:
-                raise PaddleValidationError(e.message) from e
-            raise
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     def get(
@@ -272,13 +268,14 @@ class ProductBase(ResourceBase):
             print(product)
         """
         try:
-            response = self._get(product_id, include=",".join(include) if include else None)
+            params = filter_none_kwargs(
+                include=",".join(include) if include else None,
+            )
+            response = self._get(product_id, **params)
 
             return ProductGetResponse(response)
         except PaddleAPIError as e:
-            if e.status_code == 404:
-                raise PaddleNotFoundError(e.message) from e
-            raise
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     def update(
@@ -362,9 +359,7 @@ class ProductBase(ResourceBase):
 
             return ProductCreateResponse(response)
         except PaddleAPIError as e:
-            if e.status_code == 422:
-                raise PaddleValidationError(e.message) from e
-            raise
+            raise create_paddle_error(e.status_code, e.message) from e
 
 
 class Product(ProductBase):
@@ -547,9 +542,7 @@ class AsyncProduct(ProductBase):
 
             return ProductListResponse(response)
         except PaddleAPIError as e:
-            if e.status_code == 422:
-                raise PaddleValidationError(e.message) from e
-            raise
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     async def create(
@@ -628,9 +621,7 @@ class AsyncProduct(ProductBase):
 
             return ProductCreateResponse(response)
         except PaddleAPIError as e:
-            if e.status_code == 422:
-                raise PaddleValidationError(e.message) from e
-            raise
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     async def get(
@@ -679,9 +670,7 @@ class AsyncProduct(ProductBase):
             response = await self._get(product_id, include=",".join(include) if include else None)
             return ProductGetResponse(response)
         except PaddleAPIError as e:
-            if e.status_code == 404:
-                raise PaddleNotFoundError(e.message) from e
-            raise
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     async def update(
@@ -767,6 +756,4 @@ class AsyncProduct(ProductBase):
 
             return ProductCreateResponse(response)
         except PaddleAPIError as e:
-            if e.status_code == 422:
-                raise PaddleValidationError(e.message) from e
-            raise
+            raise create_paddle_error(e.status_code, e.message) from e

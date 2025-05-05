@@ -48,6 +48,8 @@ where = ["."]
 [tool.black]
 line-length = 100
 include = '\.pyi?$'
+target-version = ['py38']
+preview = true
 
 [tool.ruff]
 lint.select = [

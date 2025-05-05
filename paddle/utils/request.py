@@ -2,7 +2,6 @@ from typing import Dict, Any, Optional, Callable, TypeVar
 
 from paddle.exceptions import PaddleAPIError
 
-
 T = TypeVar("T")
 
 

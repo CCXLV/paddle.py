@@ -6,7 +6,6 @@ from typing import TypeVar, Callable, get_type_hints, cast, get_origin, get_args
 
 from pydantic import ValidationError, create_model
 
-
 T = TypeVar("T", bound=Callable)
 
 

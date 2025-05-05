@@ -1,6 +1,5 @@
 from typing import Literal
 
-
 TAX_CATEGORY = Literal[
     "digital-goods",
     "ebooks",
