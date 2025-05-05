@@ -51,9 +51,11 @@ class AsyncClient(BaseClient):
         """Initialize resources."""
         from paddle.models.resources import AsyncProduct
         from paddle.models.resources import AsyncPrice
+        from paddle.models.resources import AsyncCustomer
 
         self.product = self._create_resource(AsyncProduct)
         self.price = self._create_resource(AsyncPrice)
+        self.customer = self._create_resource(AsyncCustomer)
 
     async def _request(
         self,

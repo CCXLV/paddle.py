@@ -19,6 +19,23 @@ class CustomerData(BaseModel):
     import_meta: Optional[ImportMeta] = None
 
 
+class CustomerCreditBalance(BaseModel):
+    available: str
+    reserved: str
+    used: str
+
+
+class CustomerCreditBalanceData(BaseModel):
+    customer_id: str
+    currency_code: str
+    balance: CustomerCreditBalance
+
+
+class CustomerAuthTokenData(BaseModel):
+    customer_auth_token: str
+    expires_at: str
+
+
 @dataclass
 class CustomerListResponse:
     """
@@ -72,4 +89,32 @@ class CustomerUpdateResponse:
 
     def __init__(self, response: Dict[str, Any]):
         self.data = CustomerData(**response["data"])
+        self.meta = Meta(**response["meta"])
+
+
+@dataclass
+class CustomerCreditBalanceResponse:
+    """
+    Response for the Customer Credit Balance endpoint.
+    """
+
+    data: List[CustomerCreditBalanceData]
+    meta: Meta
+
+    def __init__(self, response: Dict[str, Any]):
+        self.data = [CustomerCreditBalanceData(**item) for item in response["data"]]
+        self.meta = Meta(**response["meta"])
+
+
+@dataclass
+class CustomerAuthTokenResponse:
+    """
+    Response for the Customer Auth Token endpoint.
+    """
+
+    data: CustomerAuthTokenData
+    meta: Meta
+
+    def __init__(self, response: Dict[str, Any]):
+        self.data = CustomerAuthTokenData(**response["data"])
         self.meta = Meta(**response["meta"])

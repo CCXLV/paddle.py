@@ -100,9 +100,11 @@ class Client(BaseClient):
         """Initialize resources."""
         from .models.resources import Product
         from .models.resources import Price
+        from .models.resources import Customer
 
         self.product = self._create_resource(Product)
         self.price = self._create_resource(Price)
+        self.customer = self._create_resource(Customer)
 
     def _request(
         self,
