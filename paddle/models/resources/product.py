@@ -22,6 +22,7 @@ from paddle.utils.helpers import filter_none_kwargs
 from paddle.exceptions import PaddleAPIError, create_paddle_error
 
 
+# TODO: Fix error handling
 class ProductBase(ResourceBase):
     """Base resource for Paddle Products API endpoints."""
 

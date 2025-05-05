@@ -155,6 +155,8 @@ class CustomerBase(ResourceBase):
         except PaddleAPIError as e:
             raise create_paddle_error(e.status_code, e.message) from e
 
+    # TODO: Add remaining endpoints
+
 
 class Customer(CustomerBase):
     """
@@ -209,3 +211,6 @@ class Customer(CustomerBase):
             method="POST",
             path=f"/customers/{customer_id}/auth-token",
         )
+
+
+# TODO: Add async methods

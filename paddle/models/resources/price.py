@@ -25,6 +25,7 @@ from paddle.utils.decorators import validate_params
 from paddle.utils.helpers import filter_none_kwargs
 
 
+# TODO: Fix error handling
 class PriceBase(ResourceBase):
     """
     Paddle Prices API endpoints.
