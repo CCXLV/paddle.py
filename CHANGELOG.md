@@ -51,20 +51,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [ ] Create
   - [ ] Get
   - [ ] Update
-
-- [ ] Discounts
-  - [ ] List
-  - [ ] Create
-  - [ ] Get
-  - [ ] Update
-
-- [ ] Customers
-  - [ ] List
-  - [ ] Create
-  - [ ] Get
-  - [ ] Update
-  - [ ] List credit balances
-  - [ ] Generate auth token
+  
+- [x] Customers
+  - [x] List
+  - [x] Create
+  - [x] Get
+  - [x] Update
+  - [x] List credit balances
+  - [x] Generate auth token
 
 - [ ] Addresses
   - [ ] List
