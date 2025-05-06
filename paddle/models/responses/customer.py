@@ -36,6 +36,28 @@ class CustomerAuthTokenData(BaseModel):
     expires_at: str
 
 
+class CustomerPortalGeneral(BaseModel):
+    overview: str
+
+
+class CustomerPortalSubscription(BaseModel):
+    id: str
+    cancel_subscription: str
+    update_subscription_payment_method: str
+
+
+class CustomerPortalUrls(BaseModel):
+    general: CustomerPortalGeneral
+    subscription: CustomerPortalSubscription
+
+
+class CustomerPortalSessionData(BaseModel):
+    id: str
+    customer_id: str
+    urls: CustomerPortalUrls
+    created_at: str
+
+
 @dataclass
 class CustomerListResponse:
     """
@@ -117,4 +139,18 @@ class CustomerAuthTokenResponse:
 
     def __init__(self, response: Dict[str, Any]):
         self.data = CustomerAuthTokenData(**response["data"])
+        self.meta = Meta(**response["meta"])
+
+
+@dataclass
+class CustomerPortalSessionResponse:
+    """
+    Response for the Customer Portal Session endpoint.
+    """
+
+    data: CustomerPortalSessionData
+    meta: Meta
+
+    def __init__(self, response: Dict[str, Any]):
+        self.data = CustomerPortalSessionData(**response["data"])
         self.meta = Meta(**response["meta"])

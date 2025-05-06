@@ -56,6 +56,18 @@ class BaseClient:
         """
         return resource_class(self)
 
+    def _add_extension(self, extension_class: Type[T]) -> T:
+        """
+        Add an extension to the client.
+
+        Parameters:
+            extension_class: The extension class to add
+
+        Returns:
+            An instance of the extension class
+        """
+        return extension_class()
+
 
 class Client(BaseClient):
     """
@@ -86,6 +98,10 @@ class Client(BaseClient):
             timeout=self.timeout,
             headers=self._get_headers(),
         )
+
+        # Initialize extensions
+        self._init_extensions()
+
         # Initialize resources
         self._init_resources()
 
@@ -95,6 +111,11 @@ class Client(BaseClient):
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Close the HTTP client."""
         self._client.close()
+
+    def _init_extensions(self):
+        from .extensions import Webhooks
+
+        self.webhooks = self._add_extension(Webhooks)
 
     def _init_resources(self):
         """Initialize resources."""

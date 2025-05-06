@@ -18,6 +18,7 @@ from paddle.models.responses.customer import (
     CustomerUpdateResponse,
     CustomerCreditBalanceResponse,
     CustomerAuthTokenResponse,
+    CustomerPortalSessionResponse,
 )
 
 from paddle.utils.decorators import validate_params
@@ -54,6 +55,10 @@ class CustomerBase(ResourceBase):
 
     def _generate_auth_token(self, customer_id: str) -> Dict[str, Any]:
         """Internal method to generate an authorization token for a customer."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _create_portal_session(self, customer_id: str) -> Dict[str, Any]:
+        """Internal method to create a portal session for a customer."""
         raise NotImplementedError("Subclasses must implement this method")
 
     @validate_params
@@ -190,6 +195,20 @@ class CustomerBase(ResourceBase):
         except PaddleAPIError as e:
             raise create_paddle_error(e.status_code, e.message) from e
 
+    @validate_params
+    def create_portal_session(
+        self,
+        customer_id: str,
+    ) -> CustomerPortalSessionResponse:
+        # TODO: Add docstring
+
+        try:
+            response = self._create_portal_session(customer_id)
+
+            return CustomerPortalSessionResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
 
 class Customer(CustomerBase):
     """
@@ -245,6 +264,13 @@ class Customer(CustomerBase):
             path=f"/customers/{customer_id}/auth-token",
         )
 
+    def _create_portal_session(self, customer_id: str) -> Dict[str, Any]:
+        """Internal method to create a portal session for a customer."""
+        return self._client._request(
+            method="POST",
+            path=f"/customers/{customer_id}/portal-sessions",
+        )
+
 
 class AsyncCustomer(CustomerBase):
     """
@@ -298,6 +324,13 @@ class AsyncCustomer(CustomerBase):
         return await self._client._request(
             method="POST",
             path=f"/customers/{customer_id}/auth-token",
+        )
+
+    async def _create_portal_session(self, customer_id: str) -> Dict[str, Any]:
+        """Internal method to create a portal session for a customer."""
+        return await self._client._request(
+            method="POST",
+            path=f"/customers/{customer_id}/portal-sessions",
         )
 
     @validate_params
@@ -431,5 +464,19 @@ class AsyncCustomer(CustomerBase):
             response = await self._generate_auth_token(customer_id)
 
             return CustomerAuthTokenResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
+    @validate_params
+    async def create_portal_session(
+        self,
+        customer_id: str,
+    ) -> CustomerPortalSessionResponse:
+        # TODO: Add docstring
+
+        try:
+            response = await self._create_portal_session(customer_id)
+
+            return CustomerPortalSessionResponse(response)
         except PaddleAPIError as e:
             raise create_paddle_error(e.status_code, e.message) from e

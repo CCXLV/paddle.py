@@ -37,6 +37,9 @@ class AsyncClient(BaseClient):
             timeout=self.timeout,
             headers=self._get_headers(),
         )
+        # Initialize extensions
+        self._init_extensions()
+
         # Initialize resources
         self._init_resources()
 
@@ -46,6 +49,11 @@ class AsyncClient(BaseClient):
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Close the HTTP client."""
         await self._client.aclose()
+
+    def _init_extensions(self):
+        from paddle.extensions import Webhooks
+
+        self.webhooks = self._add_extension(Webhooks)
 
     def _init_resources(self):
         """Initialize resources."""

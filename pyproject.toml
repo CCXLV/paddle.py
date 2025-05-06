@@ -70,13 +70,8 @@ exclude = [
     ".git",
     ".ruff_cache",
     ".venv",
-    "app/database/revisions",
     "examples",
-    "node_modules",
 ]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
-
-[tool.ruff.lint.isort]
-known-third-party = ["fastapi", "pydantic", "starlette"]
