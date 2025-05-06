@@ -77,8 +77,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [ ] Get
   - [ ] Delete
 
-- [ ] Customer portal sessions
-  - [ ] Create
+- [x] Customer portal sessions
+  - [x] Create
 
 - [ ] Transactions
   - [ ] List
