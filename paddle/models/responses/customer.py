@@ -48,7 +48,7 @@ class CustomerPortalSubscription(BaseModel):
 
 class CustomerPortalUrls(BaseModel):
     general: CustomerPortalGeneral
-    subscription: CustomerPortalSubscription
+    subscriptions: List[CustomerPortalSubscription]
 
 
 class CustomerPortalSessionData(BaseModel):

@@ -57,7 +57,9 @@ class CustomerBase(ResourceBase):
         """Internal method to generate an authorization token for a customer."""
         raise NotImplementedError("Subclasses must implement this method")
 
-    def _create_portal_session(self, customer_id: str) -> Dict[str, Any]:
+    def _create_portal_session(
+        self, customer_id: str, subscription_ids: Optional[List[str]] = None
+    ) -> Dict[str, Any]:
         """Internal method to create a portal session for a customer."""
         raise NotImplementedError("Subclasses must implement this method")
 
@@ -109,13 +111,13 @@ class CustomerBase(ResourceBase):
         # TODO: Add docstring
 
         try:
-            kwargs = filter_none_kwargs(
+            params = filter_none_kwargs(
                 email=email,
                 name=name,
                 custom_data=custom_data,
                 locale=locale,
             )
-            response = self._create(**kwargs)
+            response = self._create(**params)
 
             return CustomerCreateResponse(response)
         except PaddleAPIError as e:
@@ -149,14 +151,14 @@ class CustomerBase(ResourceBase):
         # TODO: Add docstring
 
         try:
-            kwargs = filter_none_kwargs(
+            params = filter_none_kwargs(
                 name=name,
                 email=email,
                 status=status,
                 custom_data=custom_data,
                 locale=locale,
             )
-            response = self._update(customer_id, **kwargs)
+            response = self._update(customer_id, **params)
 
             return CustomerUpdateResponse(response)
         except PaddleAPIError as e:
@@ -199,11 +201,16 @@ class CustomerBase(ResourceBase):
     def create_portal_session(
         self,
         customer_id: str,
+        *,
+        subscription_ids: Optional[List[str]] = None,
     ) -> CustomerPortalSessionResponse:
         # TODO: Add docstring
 
         try:
-            response = self._create_portal_session(customer_id)
+            params = filter_none_kwargs(
+                subscription_ids=subscription_ids,
+            )
+            response = self._create_portal_session(customer_id, **params)
 
             return CustomerPortalSessionResponse(response)
         except PaddleAPIError as e:
@@ -264,11 +271,12 @@ class Customer(CustomerBase):
             path=f"/customers/{customer_id}/auth-token",
         )
 
-    def _create_portal_session(self, customer_id: str) -> Dict[str, Any]:
+    def _create_portal_session(self, customer_id: str, **kwargs: Any) -> Dict[str, Any]:
         """Internal method to create a portal session for a customer."""
         return self._client._request(
             method="POST",
             path=f"/customers/{customer_id}/portal-sessions",
+            json=kwargs,
         )
 
 
@@ -326,11 +334,12 @@ class AsyncCustomer(CustomerBase):
             path=f"/customers/{customer_id}/auth-token",
         )
 
-    async def _create_portal_session(self, customer_id: str) -> Dict[str, Any]:
+    async def _create_portal_session(self, customer_id: str, **kwargs: Any) -> Dict[str, Any]:
         """Internal method to create a portal session for a customer."""
         return await self._client._request(
             method="POST",
             path=f"/customers/{customer_id}/portal-sessions",
+            json=kwargs,
         )
 
     @validate_params
@@ -381,13 +390,13 @@ class AsyncCustomer(CustomerBase):
         # TODO: Add docstring
 
         try:
-            kwargs = filter_none_kwargs(
+            params = filter_none_kwargs(
                 email=email,
                 name=name,
                 custom_data=custom_data,
                 locale=locale,
             )
-            response = await self._create(**kwargs)
+            response = await self._create(**params)
 
             return CustomerCreateResponse(response)
         except PaddleAPIError as e:
@@ -421,14 +430,14 @@ class AsyncCustomer(CustomerBase):
         # TODO: Add docstring
 
         try:
-            kwargs = filter_none_kwargs(
+            params = filter_none_kwargs(
                 name=name,
                 email=email,
                 status=status,
                 custom_data=custom_data,
                 locale=locale,
             )
-            response = await self._update(customer_id, **kwargs)
+            response = await self._update(customer_id, **params)
 
             return CustomerUpdateResponse(response)
         except PaddleAPIError as e:
@@ -471,11 +480,16 @@ class AsyncCustomer(CustomerBase):
     async def create_portal_session(
         self,
         customer_id: str,
+        *,
+        subscription_ids: Optional[List[str]] = None,
     ) -> CustomerPortalSessionResponse:
         # TODO: Add docstring
 
         try:
-            response = await self._create_portal_session(customer_id)
+            params = filter_none_kwargs(
+                subscription_ids=subscription_ids,
+            )
+            response = await self._create_portal_session(customer_id, **params)
 
             return CustomerPortalSessionResponse(response)
         except PaddleAPIError as e:
