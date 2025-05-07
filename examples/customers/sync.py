@@ -6,22 +6,22 @@ client = Client(
 )
 
 # Get all customers
-customers = client.customer.list()
+customers = client.customers.list()
 print(customers)
 
 # Create a customer
-customer = client.customer.create(
+customer = client.customers.create(
     email="test@example.com",
     name="Test Customer",
 )
 print(customer)
 
 # Get a customer
-customer = client.customer.get("ctm_0123456789")
+customer = client.customers.get("ctm_0123456789")
 print(customer)
 
 # Update a customer
-updated_customer = client.customer.update(
+updated_customer = client.customers.update(
     "ctm_0123456789",
     email="updated@example.com",
     name="Updated Customer",
@@ -29,9 +29,15 @@ updated_customer = client.customer.update(
 print(updated_customer)
 
 # List credit balances
-credit_balances = client.customer.list_credit_balances("ctm_0123456789")
+credit_balances = client.customers.list_credit_balances("ctm_0123456789")
 print(credit_balances)
 
 # Generate auth token
-auth_token = client.customer.generate_auth_token("ctm_0123456789")
+auth_token = client.customers.generate_auth_token("ctm_0123456789")
 print(auth_token)
+
+# Create portal session
+portal_session = client.customers.create_portal_session(
+    "ctm_0123456789", subscription_ids=["sub_0123456789"]
+)
+print(portal_session)
