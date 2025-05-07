@@ -4,8 +4,8 @@ from unittest.mock import patch
 
 from paddle.client import BaseClient
 from paddle.models.resources.base import ResourceBase
-from paddle.models.resources.product import ProductBase
-from paddle.models.responses.product import (
+from paddle.models.resources.products import ProductBase
+from paddle.models.responses.products import (
     ProductListResponse,
     ProductCreateResponse,
     ProductGetResponse,

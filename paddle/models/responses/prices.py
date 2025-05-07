@@ -7,7 +7,7 @@ from paddle.utils.constants import CURRENCY_CODE, COUNTRY_CODE
 from paddle.models.responses.shared import ImportMeta, MetaWithPagination, Meta
 
 if TYPE_CHECKING:
-    from paddle.models.responses.product import ProductData
+    from paddle.models.responses.products import ProductData
 
 
 # Types

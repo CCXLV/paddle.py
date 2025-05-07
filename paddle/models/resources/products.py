@@ -10,7 +10,7 @@ from paddle.client import Client
 from paddle.aio.client import AsyncClient
 
 from paddle.models.resources.base import ResourceBase
-from paddle.models.responses.product import (
+from paddle.models.responses.products import (
     ProductListResponse,
     ProductCreateResponse,
     ProductGetResponse,

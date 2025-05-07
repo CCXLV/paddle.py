@@ -1,10 +1,10 @@
 __all__ = ["Product", "AsyncProduct", "Price", "AsyncPrice", "Customer", "AsyncCustomer"]
 
-from .product import Product
-from .product import AsyncProduct
+from .products import Product
+from .products import AsyncProduct
 
-from .price import Price
-from .price import AsyncPrice
+from .prices import Price
+from .prices import AsyncPrice
 
-from .customer import Customer
-from .customer import AsyncCustomer
+from .customers import Customer
+from .customers import AsyncCustomer

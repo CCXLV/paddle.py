@@ -11,7 +11,7 @@ from paddle.models.responses.shared import (
 )
 
 if TYPE_CHECKING:
-    from paddle.models.responses.price import PriceData
+    from paddle.models.responses.prices import PriceData
 
 
 class ProductData(BaseModel):

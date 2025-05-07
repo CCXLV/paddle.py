@@ -11,7 +11,7 @@ from paddle.aio.client import AsyncClient
 from paddle.exceptions import PaddleAPIError, create_paddle_error
 
 from paddle.models.resources.base import ResourceBase
-from paddle.models.responses.customer import (
+from paddle.models.responses.customers import (
     CustomerListResponse,
     CustomerCreateResponse,
     CustomerGetResponse,

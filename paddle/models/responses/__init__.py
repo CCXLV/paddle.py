@@ -1,7 +1,7 @@
 __all__ = ["PriceData", "ProductData"]
 
-from .product import ProductData, ProductDataWithPrices
-from .price import PriceData, PriceDataWithProduct
+from .products import ProductData, ProductDataWithPrices
+from .prices import PriceData, PriceDataWithProduct
 
 # Rebuild models
 ProductDataWithPrices.model_rebuild()
