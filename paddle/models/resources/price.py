@@ -24,8 +24,9 @@ from paddle.models.responses.price import (
 from paddle.utils.decorators import validate_params
 from paddle.utils.helpers import filter_none_kwargs
 
+from paddle.exceptions import PaddleAPIError, create_paddle_error
 
-# TODO: Fix error handling
+
 class PriceBase(ResourceBase):
     """
     Paddle Prices API endpoints.
@@ -149,20 +150,23 @@ class PriceBase(ResourceBase):
 
         """
 
-        params = filter_none_kwargs(
-            after=after,
-            id=",".join(id) if id else None,
-            include=",".join(include) if include else None,
-            order_by=order_by,
-            per_page=per_page,
-            product_id=",".join(product_id) if product_id else None,
-            status=",".join(status) if status else None,
-            recurring=recurring,
-            type=type,
-        )
-        response = self._list(**params)
+        try:
+            params = filter_none_kwargs(
+                after=after,
+                id=",".join(id) if id else None,
+                include=",".join(include) if include else None,
+                order_by=order_by,
+                per_page=per_page,
+                product_id=",".join(product_id) if product_id else None,
+                status=",".join(status) if status else None,
+                recurring=recurring,
+                type=type,
+            )
+            response = self._list(**params)
 
-        return PriceListResponse(response)
+            return PriceListResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     def create(
@@ -245,22 +249,25 @@ class PriceBase(ResourceBase):
             print(price)
         """
 
-        kwargs = filter_none_kwargs(
-            description=description,
-            product_id=product_id,
-            unit_price=unit_price,
-            type=type,
-            name=name,
-            billing_cycle=billing_cycle,
-            trial_period=trial_period,
-            tax_mode=tax_mode,
-            unit_price_overrides=unit_price_overrides,
-            quantity=quantity,
-            custom_data=custom_data,
-        )
-        response = self._create(**kwargs)
+        try:
+            kwargs = filter_none_kwargs(
+                description=description,
+                product_id=product_id,
+                unit_price=unit_price,
+                type=type,
+                name=name,
+                billing_cycle=billing_cycle,
+                trial_period=trial_period,
+                tax_mode=tax_mode,
+                unit_price_overrides=unit_price_overrides,
+                quantity=quantity,
+                custom_data=custom_data,
+            )
+            response = self._create(**kwargs)
 
-        return PriceCreateResponse(response)
+            return PriceCreateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     def get(
@@ -302,10 +309,13 @@ class PriceBase(ResourceBase):
             print(price)
         """
 
-        kwargs = filter_none_kwargs(include=",".join(include) if include else None)
-        response = self._get(price_id, **kwargs)
+        try:
+            kwargs = filter_none_kwargs(include=",".join(include) if include else None)
+            response = self._get(price_id, **kwargs)
 
-        return PriceGetResponse(response)
+            return PriceGetResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     def update(
@@ -386,21 +396,24 @@ class PriceBase(ResourceBase):
             print(price)
         """
 
-        kwargs = filter_none_kwargs(
-            description=description,
-            type=type,
-            name=name,
-            billing_cycle=billing_cycle,
-            trial_period=trial_period,
-            tax_mode=tax_mode,
-            unit_price_overrides=unit_price_overrides,
-            quantity=quantity,
-            status=status,
-            custom_data=custom_data,
-        )
-        response = self._update(price_id, **kwargs)
+        try:
+            kwargs = filter_none_kwargs(
+                description=description,
+                type=type,
+                name=name,
+                billing_cycle=billing_cycle,
+                trial_period=trial_period,
+                tax_mode=tax_mode,
+                unit_price_overrides=unit_price_overrides,
+                quantity=quantity,
+                status=status,
+                custom_data=custom_data,
+            )
+            response = self._update(price_id, **kwargs)
 
-        return PriceUpdateResponse(response)
+            return PriceUpdateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
 
 
 class Price(PriceBase):
@@ -584,20 +597,23 @@ class AsyncPrice(PriceBase):
 
         """
 
-        params = filter_none_kwargs(
-            after=after,
-            id=",".join(id) if id else None,
-            include=",".join(include) if include else None,
-            order_by=order_by,
-            per_page=per_page,
-            product_id=",".join(product_id) if product_id else None,
-            status=",".join(status) if status else None,
-            recurring=recurring,
-            type=type,
-        )
-        response = await self._list(**params)
+        try:
+            params = filter_none_kwargs(
+                after=after,
+                id=",".join(id) if id else None,
+                include=",".join(include) if include else None,
+                order_by=order_by,
+                per_page=per_page,
+                product_id=",".join(product_id) if product_id else None,
+                status=",".join(status) if status else None,
+                recurring=recurring,
+                type=type,
+            )
+            response = await self._list(**params)
 
-        return PriceListResponse(response)
+            return PriceListResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     async def create(
@@ -685,22 +701,25 @@ class AsyncPrice(PriceBase):
             asyncio.run(main())
         """
 
-        kwargs = filter_none_kwargs(
-            description=description,
-            product_id=product_id,
-            unit_price=unit_price,
-            type=type,
-            name=name,
-            billing_cycle=billing_cycle,
-            trial_period=trial_period,
-            tax_mode=tax_mode,
-            unit_price_overrides=unit_price_overrides,
-            quantity=quantity,
-            custom_data=custom_data,
-        )
-        response = await self._create(**kwargs)
+        try:
+            kwargs = filter_none_kwargs(
+                description=description,
+                product_id=product_id,
+                unit_price=unit_price,
+                type=type,
+                name=name,
+                billing_cycle=billing_cycle,
+                trial_period=trial_period,
+                tax_mode=tax_mode,
+                unit_price_overrides=unit_price_overrides,
+                quantity=quantity,
+                custom_data=custom_data,
+            )
+            response = await self._create(**kwargs)
 
-        return PriceCreateResponse(response)
+            return PriceCreateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     async def get(
@@ -746,10 +765,13 @@ class AsyncPrice(PriceBase):
             asyncio.run(main())
         """
 
-        kwargs = filter_none_kwargs(include=",".join(include) if include else None)
-        response = await self._get(price_id, **kwargs)
+        try:
+            kwargs = filter_none_kwargs(include=",".join(include) if include else None)
+            response = await self._get(price_id, **kwargs)
 
-        return PriceGetResponse(response)
+            return PriceGetResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
 
     @validate_params
     async def update(
@@ -834,18 +856,21 @@ class AsyncPrice(PriceBase):
             asyncio.run(main())
         """
 
-        kwargs = filter_none_kwargs(
-            description=description,
-            type=type,
-            name=name,
-            billing_cycle=billing_cycle,
-            trial_period=trial_period,
-            tax_mode=tax_mode,
-            unit_price_overrides=unit_price_overrides,
-            quantity=quantity,
-            status=status,
-            custom_data=custom_data,
-        )
-        response = await self._update(price_id, **kwargs)
+        try:
+            kwargs = filter_none_kwargs(
+                description=description,
+                type=type,
+                name=name,
+                billing_cycle=billing_cycle,
+                trial_period=trial_period,
+                tax_mode=tax_mode,
+                unit_price_overrides=unit_price_overrides,
+                quantity=quantity,
+                status=status,
+                custom_data=custom_data,
+            )
+            response = await self._update(price_id, **kwargs)
 
-        return PriceUpdateResponse(response)
+            return PriceUpdateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e

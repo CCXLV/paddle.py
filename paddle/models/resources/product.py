@@ -16,13 +16,13 @@ from paddle.models.responses.product import (
     ProductGetResponse,
 )
 
-from paddle.utils.decorators import validate_params
 from paddle.utils.constants import TAX_CATEGORY
+from paddle.utils.decorators import validate_params
 from paddle.utils.helpers import filter_none_kwargs
+
 from paddle.exceptions import PaddleAPIError, create_paddle_error
 
 
-# TODO: Fix error handling
 class ProductBase(ResourceBase):
     """Base resource for Paddle Products API endpoints."""
 
