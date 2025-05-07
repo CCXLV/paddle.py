@@ -74,17 +74,66 @@ class CustomerBase(ResourceBase):
             Literal[
                 "id[ASC]",
                 "id[DESC]",
-                "created_at[ASC]",
-                "created_at[DESC]",
-                "updated_at[ASC]",
-                "updated_at[DESC]",
             ]
         ] = None,
         per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50,
         search: Optional[str] = None,
         status: Optional[List[Literal["active", "archived"]]] = None,
     ) -> CustomerListResponse:
-        # TODO: Add docstring
+        """
+        List customers.
+
+        Parameters
+        ----------
+
+            after: Optional[str] = None
+                Return only the IDs greater than the specified ID.
+
+            email: Optional[List[str]] = None
+                Return only the IDs specified.
+
+            id: Optional[List[str]] = None
+                Return only the IDs specified.
+
+            order_by: Optional[
+                Literal[
+                    "id[ASC]",
+                    "id[DESC]",
+                ]
+            ] = None
+                Order returned entities by the specified field and direction ([ASC] or [DESC]).
+
+            per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50
+                Set how many entities are returned per page.
+                Default: 50; Maximum: 200.
+
+            search: Optional[str] = None
+                Return only the entities that match the specified search query.
+
+            status: Optional[List[Literal["active", "archived"]]] = None
+                Return only the entities that match the specified status.
+
+        Returns
+        -------
+
+            A list of customers.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the customer is not found.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            customers = client.customers.list()
+            print(customers)
+
+        """
 
         params = filter_none_kwargs(
             after=after,
@@ -108,7 +157,45 @@ class CustomerBase(ResourceBase):
         custom_data: Optional[Dict[str, str]] = None,
         locale: Optional[str] = None,
     ) -> CustomerCreateResponse:
-        # TODO: Add docstring
+        """
+        Create a customer.
+
+        Parameters
+        ----------
+
+            email: str
+                The email address of the customer.
+
+            name: Optional[str] = None
+                The name of the customer.
+
+            custom_data: Optional[Dict[str, str]] = None
+                Custom data for the customer.
+
+            locale: Optional[str] = None
+                The locale of the customer.
+
+        Returns
+        -------
+
+            A customer.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleBadRequestError: If the request is invalid.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            customer = client.customers.create(email="test@example.com")
+            print(customer)
+
+        """
 
         try:
             params = filter_none_kwargs(
@@ -128,7 +215,36 @@ class CustomerBase(ResourceBase):
         self,
         customer_id: str,
     ) -> CustomerGetResponse:
-        # TODO: Add docstring
+        """
+        Get a customer.
+
+        Parameters
+        ----------
+
+            customer_id: str
+                The ID of the customer.
+
+        Returns
+        -------
+
+            A customer.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the customer is not found.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            customer = client.customers.get("ctm_1234567890")
+            print(customer)
+
+        """
 
         try:
             response = self._get(customer_id)
@@ -148,7 +264,51 @@ class CustomerBase(ResourceBase):
         custom_data: Optional[Dict[str, str]] = None,
         locale: Optional[str] = None,
     ) -> CustomerUpdateResponse:
-        # TODO: Add docstring
+        """
+        Update a customer.
+
+        Parameters
+        ----------
+
+            customer_id: str
+                The ID of the customer.
+
+            name: Optional[str] = None
+                The name of the customer.
+
+            email: Optional[str] = None
+                The email address of the customer.
+
+            status: Optional[Literal["active", "archived"]] = None
+                The status of the customer.
+
+            custom_data: Optional[Dict[str, str]] = None
+                Custom data for the customer.
+
+            locale: Optional[str] = None
+                The locale of the customer.
+
+        Returns
+        -------
+
+            A customer.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleBadRequestError: If the request is invalid.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            customer = client.customers.update(customer_id="ctm_1234567890", name="John Doe")
+            print(customer)
+
+        """
 
         try:
             params = filter_none_kwargs(
@@ -171,7 +331,39 @@ class CustomerBase(ResourceBase):
         *,
         currency_code: Optional[List[str]] = None,
     ) -> CustomerCreditBalanceResponse:
-        # TODO: Add docstring
+        """
+        List credit balances for a customer.
+
+        Parameters
+        ----------
+
+            customer_id: str
+                The ID of the customer.
+
+            currency_code: Optional[List[str]] = None
+                The currency code of the credit balance.
+
+        Returns
+        -------
+
+            A list of credit balances.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the customer is not found.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            credit_balances = client.customers.list_credit_balances(customer_id="ctm_1234567890")
+            print(credit_balances)
+
+        """
 
         try:
             params = filter_none_kwargs(
@@ -188,7 +380,36 @@ class CustomerBase(ResourceBase):
         self,
         customer_id: str,
     ) -> CustomerAuthTokenResponse:
-        # TODO: Add docstring
+        """
+        Generate an authorization token for a customer.
+
+        Parameters
+        ----------
+
+            customer_id: str
+                The ID of the customer.
+
+        Returns
+        -------
+
+            An authorization token.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the customer is not found.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            auth_token = client.customers.generate_auth_token(customer_id="ctm_1234567890")
+            print(auth_token)
+
+        """
 
         try:
             response = self._generate_auth_token(customer_id)
@@ -204,7 +425,42 @@ class CustomerBase(ResourceBase):
         *,
         subscription_ids: Optional[List[str]] = None,
     ) -> CustomerPortalSessionResponse:
-        # TODO: Add docstring
+        """
+        Create a portal session for a customer.
+
+        Parameters
+        ----------
+
+            customer_id: str
+                The ID of the customer.
+
+            subscription_ids: Optional[List[str]] = None
+                The IDs of the subscriptions to include in the portal session.
+
+        Returns
+        -------
+
+            A portal session.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the customer is not found.
+
+        Example
+        -------- ::
+
+            from paddle import Client
+
+            client = Client(api_key="your_api_key")
+            portal_session = client.customers.create_portal_session(
+                customer_id="ctm_1234567890",
+                subscription_ids=["sub_1234567890"],
+            )
+            print(portal_session)
+
+        """
 
         try:
             params = filter_none_kwargs(
@@ -353,17 +609,69 @@ class AsyncCustomer(CustomerBase):
             Literal[
                 "id[ASC]",
                 "id[DESC]",
-                "created_at[ASC]",
-                "created_at[DESC]",
-                "updated_at[ASC]",
-                "updated_at[DESC]",
             ]
         ] = None,
         per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50,
         search: Optional[str] = None,
         status: Optional[List[Literal["active", "archived"]]] = None,
     ) -> CustomerListResponse:
-        # TODO: Add docstring
+        """
+        List customers.
+
+        Parameters
+        ----------
+
+            after: Optional[str] = None
+                Return only the IDs greater than the specified ID.
+
+            email: Optional[List[str]] = None
+                Return only the IDs specified.
+
+            id: Optional[List[str]] = None
+                Return only the IDs specified.
+
+            order_by: Optional[
+                Literal[
+                    "id[ASC]",
+                    "id[DESC]",
+                ]
+            ] = None
+                Order returned entities by the specified field and direction ([ASC] or [DESC]).
+
+            per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50
+                Set how many entities are returned per page.
+                Default: 50; Maximum: 200.
+
+            search: Optional[str] = None
+                Return only the entities that match the specified search query.
+
+            status: Optional[List[Literal["active", "archived"]]] = None
+                Return only the entities that match the specified status.
+
+        Returns
+        -------
+
+            A list of customers.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the customer is not found.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    customers = await client.customers.list()
+                    print(customers)
+
+            asyncio.run(main())
+        """
 
         params = filter_none_kwargs(
             after=after,
@@ -387,7 +695,50 @@ class AsyncCustomer(CustomerBase):
         custom_data: Optional[Dict[str, str]] = None,
         locale: Optional[str] = None,
     ) -> CustomerCreateResponse:
-        # TODO: Add docstring
+        """|coroutine|
+
+        Create a customer.
+
+        Parameters
+        ----------
+
+            email: str
+                The email address of the customer.
+
+            name: Optional[str] = None
+                The name of the customer.
+
+            custom_data: Optional[Dict[str, str]] = None
+                Custom data for the customer.
+
+            locale: Optional[str] = None
+                The locale of the customer.
+
+        Returns
+        -------
+
+            A customer.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleBadRequestError: If the request is invalid.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    customer = await client.customers.create(email="test@example.com")
+                print(customer)
+
+            asyncio.run(main())
+
+        """
 
         try:
             params = filter_none_kwargs(
@@ -407,7 +758,41 @@ class AsyncCustomer(CustomerBase):
         self,
         customer_id: str,
     ) -> CustomerGetResponse:
-        # TODO: Add docstring
+        """|coroutine|
+
+        Get a customer.
+
+        Parameters
+        ----------
+
+            customer_id: str
+                The ID of the customer.
+
+        Returns
+        -------
+
+            A customer.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the customer is not found.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    customer = await client.customers.get("ctm_1234567890")
+                    print(customer)
+
+            asyncio.run(main())
+
+        """
 
         try:
             response = await self._get(customer_id)
@@ -427,7 +812,56 @@ class AsyncCustomer(CustomerBase):
         custom_data: Optional[Dict[str, str]] = None,
         locale: Optional[str] = None,
     ) -> CustomerUpdateResponse:
-        # TODO: Add docstring
+        """|coroutine|
+
+        Update a customer.
+
+        Parameters
+        ----------
+
+            customer_id: str
+                The ID of the customer.
+
+            name: Optional[str] = None
+                The name of the customer.
+
+            email: Optional[str] = None
+                The email address of the customer.
+
+            status: Optional[Literal["active", "archived"]] = None
+                The status of the customer.
+
+            custom_data: Optional[Dict[str, str]] = None
+                Custom data for the customer.
+
+            locale: Optional[str] = None
+                The locale of the customer.
+
+        Returns
+        -------
+
+            A customer.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleBadRequestError: If the request is invalid.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    customer = await client.customers.update(customer_id="ctm_1234567890", name="John Doe")
+                    print(customer)
+
+            asyncio.run(main())
+
+        """
 
         try:
             params = filter_none_kwargs(
@@ -450,8 +884,44 @@ class AsyncCustomer(CustomerBase):
         *,
         currency_code: Optional[List[str]] = None,
     ) -> CustomerCreditBalanceResponse:
-        # TODO: Add docstring
+        """|coroutine|
 
+        List credit balances for a customer.
+
+        Parameters
+        ----------
+
+            customer_id: str
+                The ID of the customer.
+
+            currency_code: Optional[List[str]] = None
+                The currency code of the credit balance.
+
+        Returns
+        -------
+
+            A list of credit balances.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the customer is not found.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    credit_balances = await client.customers.list_credit_balances(customer_id="ctm_1234567890")
+                    print(credit_balances)
+
+            asyncio.run(main())
+
+        """
         try:
             params = filter_none_kwargs(
                 currency_code=",".join(currency_code) if currency_code else None,
@@ -467,7 +937,41 @@ class AsyncCustomer(CustomerBase):
         self,
         customer_id: str,
     ) -> CustomerAuthTokenResponse:
-        # TODO: Add docstring
+        """|coroutine|
+
+        Generate an authorization token for a customer.
+
+        Parameters
+        ----------
+
+            customer_id: str
+                The ID of the customer.
+
+        Returns
+        -------
+
+            An authorization token.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the customer is not found.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    auth_token = await client.customers.generate_auth_token(customer_id="ctm_1234567890")
+                    print(auth_token)
+
+            asyncio.run(main())
+
+        """
 
         try:
             response = await self._generate_auth_token(customer_id)
@@ -483,7 +987,47 @@ class AsyncCustomer(CustomerBase):
         *,
         subscription_ids: Optional[List[str]] = None,
     ) -> CustomerPortalSessionResponse:
-        # TODO: Add docstring
+        """|coroutine|
+
+        Create a portal session for a customer.
+
+        Parameters
+        ----------
+
+            customer_id: str
+                The ID of the customer.
+
+            subscription_ids: Optional[List[str]] = None
+                The IDs of the subscriptions to include in the portal session.
+
+        Returns
+        -------
+
+            A portal session.
+
+        Raises
+        ------
+
+            PaddleAPIError: If the API request fails.
+            PaddleNotFoundError: If the customer is not found.
+
+        Example
+        -------- ::
+
+            import asyncio
+            from paddle.aio import AsyncClient
+
+            async def main():
+                async with AsyncClient(api_key="your_api_key") as client:
+                    portal_session = await client.customers.create_portal_session(
+                        customer_id="ctm_1234567890",
+                        subscription_ids=["sub_1234567890"],
+                    )
+                    print(portal_session)
+
+            asyncio.run(main())
+
+        """
 
         try:
             params = filter_none_kwargs(
