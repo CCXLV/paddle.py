@@ -151,7 +151,7 @@ class PriceBase(ResourceBase):
         """
 
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 after=after,
                 id=",".join(id) if id else None,
                 include=",".join(include) if include else None,
@@ -162,7 +162,7 @@ class PriceBase(ResourceBase):
                 recurring=recurring,
                 type=type,
             )
-            response = self._list(**params)
+            response = self._list(**kwargs)
 
             return PriceListResponse(response)
         except PaddleAPIError as e:

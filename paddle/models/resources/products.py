@@ -134,7 +134,7 @@ class ProductBase(ResourceBase):
             print(products)
         """
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 after=after,
                 id=",".join(id) if id else None,
                 include=",".join(include) if include else None,
@@ -144,7 +144,7 @@ class ProductBase(ResourceBase):
                 tax_category=",".join(tax_category) if tax_category else None,
                 type=type,
             )
-            response = self._list(**params)
+            response = self._list(**kwargs)
 
             return ProductListResponse(response)
         except PaddleAPIError as e:
@@ -269,10 +269,10 @@ class ProductBase(ResourceBase):
             print(product)
         """
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 include=",".join(include) if include else None,
             )
-            response = self._get(product_id, **params)
+            response = self._get(product_id, **kwargs)
 
             return ProductGetResponse(response)
         except PaddleAPIError as e:
@@ -529,7 +529,7 @@ class AsyncProduct(ProductBase):
             asyncio.run(main())
         """
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 after=after,
                 id=",".join(id) if id else None,
                 include=",".join(include) if include else None,
@@ -539,7 +539,7 @@ class AsyncProduct(ProductBase):
                 tax_category=",".join(tax_category) if tax_category else None,
                 type=type,
             )
-            response = await self._list(**params)
+            response = await self._list(**kwargs)
 
             return ProductListResponse(response)
         except PaddleAPIError as e:

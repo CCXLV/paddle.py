@@ -135,7 +135,7 @@ class CustomerBase(ResourceBase):
 
         """
 
-        params = filter_none_kwargs(
+        kwargs = filter_none_kwargs(
             after=after,
             email=",".join(email) if email else None,
             id=",".join(id) if id else None,
@@ -144,7 +144,7 @@ class CustomerBase(ResourceBase):
             search=search,
             status=",".join(status) if status else None,
         )
-        response = self._list(**params)
+        response = self._list(**kwargs)
 
         return CustomerListResponse(response)
 
@@ -198,13 +198,13 @@ class CustomerBase(ResourceBase):
         """
 
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 email=email,
                 name=name,
                 custom_data=custom_data,
                 locale=locale,
             )
-            response = self._create(**params)
+            response = self._create(**kwargs)
 
             return CustomerCreateResponse(response)
         except PaddleAPIError as e:
@@ -311,14 +311,14 @@ class CustomerBase(ResourceBase):
         """
 
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 name=name,
                 email=email,
                 status=status,
                 custom_data=custom_data,
                 locale=locale,
             )
-            response = self._update(customer_id, **params)
+            response = self._update(customer_id, **kwargs)
 
             return CustomerUpdateResponse(response)
         except PaddleAPIError as e:
@@ -366,10 +366,10 @@ class CustomerBase(ResourceBase):
         """
 
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 currency_code=",".join(currency_code) if currency_code else None,
             )
-            response = self._list_credit_balances(customer_id, **params)
+            response = self._list_credit_balances(customer_id, **kwargs)
 
             return CustomerCreditBalanceResponse(response)
         except PaddleAPIError as e:
@@ -463,10 +463,10 @@ class CustomerBase(ResourceBase):
         """
 
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 subscription_ids=subscription_ids,
             )
-            response = self._create_portal_session(customer_id, **params)
+            response = self._create_portal_session(customer_id, **kwargs)
 
             return CustomerPortalSessionResponse(response)
         except PaddleAPIError as e:
@@ -673,7 +673,7 @@ class AsyncCustomer(CustomerBase):
             asyncio.run(main())
         """
 
-        params = filter_none_kwargs(
+        kwargs = filter_none_kwargs(
             after=after,
             email=",".join(email) if email else None,
             id=",".join(id) if id else None,
@@ -682,7 +682,7 @@ class AsyncCustomer(CustomerBase):
             search=search,
             status=",".join(status) if status else None,
         )
-        response = await self._list(**params)
+        response = await self._list(**kwargs)
 
         return CustomerListResponse(response)
 
@@ -741,13 +741,13 @@ class AsyncCustomer(CustomerBase):
         """
 
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 email=email,
                 name=name,
                 custom_data=custom_data,
                 locale=locale,
             )
-            response = await self._create(**params)
+            response = await self._create(**kwargs)
 
             return CustomerCreateResponse(response)
         except PaddleAPIError as e:
@@ -864,14 +864,14 @@ class AsyncCustomer(CustomerBase):
         """
 
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 name=name,
                 email=email,
                 status=status,
                 custom_data=custom_data,
                 locale=locale,
             )
-            response = await self._update(customer_id, **params)
+            response = await self._update(customer_id, **kwargs)
 
             return CustomerUpdateResponse(response)
         except PaddleAPIError as e:
@@ -923,10 +923,10 @@ class AsyncCustomer(CustomerBase):
 
         """
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 currency_code=",".join(currency_code) if currency_code else None,
             )
-            response = await self._list_credit_balances(customer_id, **params)
+            response = await self._list_credit_balances(customer_id, **kwargs)
 
             return CustomerCreditBalanceResponse(response)
         except PaddleAPIError as e:
@@ -1030,10 +1030,10 @@ class AsyncCustomer(CustomerBase):
         """
 
         try:
-            params = filter_none_kwargs(
+            kwargs = filter_none_kwargs(
                 subscription_ids=subscription_ids,
             )
-            response = await self._create_portal_session(customer_id, **params)
+            response = await self._create_portal_session(customer_id, **kwargs)
 
             return CustomerPortalSessionResponse(response)
         except PaddleAPIError as e:
