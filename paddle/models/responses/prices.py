@@ -4,7 +4,7 @@ from typing import Literal, Optional, List, Dict, Any, TYPE_CHECKING, TypedDict
 from pydantic import BaseModel
 
 from paddle.utils.constants import CURRENCY_CODE, COUNTRY_CODE
-from paddle.models.responses.shared import ImportMeta, MetaWithPagination, Meta
+from paddle.models.responses.shared import ImportMeta, MetaWithPagination, Meta, BillingCycle
 
 if TYPE_CHECKING:
     from paddle.models.responses.products import ProductData
@@ -32,11 +32,6 @@ class QuantityType(TypedDict):
 
 
 # BaseModels
-class BillingCycle(BaseModel):
-    frequency: int
-    interval: Literal["day", "week", "month", "year"]
-
-
 class UnitPrice(BaseModel):
     amount: str
     currency_code: CURRENCY_CODE

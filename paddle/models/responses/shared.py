@@ -21,3 +21,8 @@ class Meta(BaseModel):
 
 class MetaWithPagination(Meta):
     pagination: Pagination
+
+
+class BillingCycle(BaseModel):
+    frequency: int
+    interval: Literal["day", "week", "month", "year"]

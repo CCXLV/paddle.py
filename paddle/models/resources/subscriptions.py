@@ -1,0 +1,129 @@
+"""
+Paddle Subscriptions API endpoints.
+"""
+
+from typing import Union, Optional, Literal, Annotated, Dict, Any, List
+
+from pydantic import Field
+
+from paddle.client import Client
+from paddle.aio.client import AsyncClient
+
+from paddle.models.resources.base import ResourceBase
+from paddle.models.responses.subscriptions import SubscriptionListResponse
+
+from paddle.utils.decorators import validate_params
+from paddle.utils.helpers import filter_none_kwargs
+
+from paddle.exceptions import PaddleAPIError, create_paddle_error
+
+
+class SubscriptionBase(ResourceBase):
+    """Base resource for Paddle Subscriptions API endpoints."""
+
+    def __init__(self, client: Union[Client, AsyncClient]):
+        self._client = client
+
+    def _list(self, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to list products."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _get(self, subscription_id: str) -> Dict[str, Any]:
+        """Internal method to get a subscription."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _preview_update(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to preview an update to a subscription."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _update(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to update a subscription."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _get_transaction(self, subscription_id: str) -> Dict[str, Any]:
+        """Internal method to get a transaction for a subscription."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _preview_charge(self, subscription_id: str) -> Dict[str, Any]:
+        """Internal method to list transactions for a subscription."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _charge(self, subscription_id: str) -> Dict[str, Any]:
+        """Internal method to charge a subscription."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _activate(self, subscription_id: str) -> Dict[str, Any]:
+        """Internal method to activate a trialing subscription."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _pause(self, subscription_id: str) -> Dict[str, Any]:
+        """Internal method to pause a subscription."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _resume(self, subscription_id: str) -> Dict[str, Any]:
+        """Internal method to resume a paused subscription."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def _cancel(self, subscription_id: str) -> Dict[str, Any]:
+        """Internal method to cancel a subscription."""
+        raise NotImplementedError("Subclasses must implement this method")
+
+    @validate_params
+    def list(
+        self,
+        *,
+        address_id: Optional[List[str]] = None,
+        after: Optional[str] = None,
+        collection_mode: Optional[Literal["automatic", "manual"]] = None,
+        customer_id: Optional[List[str]] = None,
+        id: Optional[List[str]] = None,
+        order_by: Optional[Literal["id[ASC]", "id[DESC]"]],
+        per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50,
+        price_id: Optional[List[str]] = None,
+        scheduled_change_action: Optional[List[Literal["cancel", "pause", "resume"]]] = None,
+        status: Optional[
+            List[Literal["active", "canceled", "past_due", "paused", "trialing"]]
+        ] = None,
+    ) -> SubscriptionListResponse:
+        try:
+            kwargs = filter_none_kwargs(
+                address_id=",".join(address_id) if address_id else None,
+                after=after,
+                collection_mode=collection_mode,
+                customer_id=",".join(customer_id) if customer_id else None,
+                id=",".join(id) if id else None,
+                order_by=order_by,
+                per_page=per_page,
+                price_id=",".join(price_id) if price_id else None,
+                scheduled_change_action=(
+                    ",".join(scheduled_change_action) if scheduled_change_action else None
+                ),
+                status=",".join(status) if status else None,
+            )
+            response = self._list(**kwargs)
+
+            return SubscriptionListResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
+    # TODO: Add remaining endpoints
+
+
+class Subscription(SubscriptionBase):
+    """Paddle Subscriptions API endpoints."""
+
+    def __init__(self, client: Union[Client, AsyncClient]):
+        super().__init__(client)
+
+    def _list(self, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to list subscriptions."""
+        return self._client._request(
+            method="GET",
+            path="/subscriptions",
+            params=kwargs,
+        )
+
+    # TODO: Add remaining endpoints
+
+
+# TODO: Add async endpoints
