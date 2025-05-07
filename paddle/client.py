@@ -123,9 +123,9 @@ class Client(BaseClient):
         from .models.resources import Price
         from .models.resources import Customer
 
-        self.product = self._create_resource(Product)
-        self.price = self._create_resource(Price)
-        self.customer = self._create_resource(Customer)
+        self.products = self._create_resource(Product)
+        self.prices = self._create_resource(Price)
+        self.customers = self._create_resource(Customer)
 
     def _request(
         self,
