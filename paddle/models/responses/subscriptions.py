@@ -1,13 +1,33 @@
 from dataclasses import dataclass
-from typing import Optional, Literal, Dict, Any, List
+from typing import Optional, Literal, TypedDict, Dict, Any, List
 
 from pydantic import BaseModel
 
-from paddle.models.responses.shared import BillingCycle, ImportMeta, MetaWithPagination, Meta
+from paddle.models.responses.shared import (
+    BillingCycle,
+    ImportMeta,
+    MetaWithPagination,
+    Meta,
+    BillingCycleType,
+)
 from paddle.models.responses.prices import PriceData
 from paddle.models.responses.products import ProductData
 
 
+# Typing
+class DiscountType(TypedDict):
+    id: str
+    effective_from: Literal["next_billing_period", "immediately"]
+
+
+class BillingDetailsType(TypedDict):
+    enable_checkout: bool
+    purchase_order_number: str
+    additional_information: Optional[str] = None
+    payment_terms: BillingCycleType
+
+
+# Models
 class Discount(BaseModel):
     id: str
     ends_at: Optional[str] = None
@@ -50,8 +70,7 @@ class Item(BaseModel):
     product: ProductData
 
 
-class SubscriptionData(BaseModel):
-    id: str
+class SubscriptionBase(BaseModel):
     status: Literal["active", "canceled", "past_due", "paused", "trialing"]
     customer_id: str
     address_id: str
@@ -74,6 +93,10 @@ class SubscriptionData(BaseModel):
     items: List[Item]
     custom_data: Optional[Dict[str, Any]] = None
     import_meta: Optional[ImportMeta] = None
+
+
+class SubscriptionData(SubscriptionBase):
+    id: str
 
 
 class BaseTotal(BaseModel):
@@ -168,6 +191,28 @@ class SubscriptionDataWithTransactions(SubscriptionData):
     recurring_transaction_details: Optional[RecurringTransactionDetails] = None
 
 
+class Credit(BaseModel):
+    amount: str
+    currency_code: str
+
+
+class Result(Credit):
+    action: Literal["credit", "charge"]
+
+
+class UpdateSummary(BaseModel):
+    credit: Credit
+    charge: Credit
+    results: Result
+
+
+class PreviewUpdateData(SubscriptionBase):
+    next_transaction: Optional[NextTransaction] = None
+    recurring_transaction_details: Optional[RecurringTransactionDetails] = None
+    immediate_transaction: Optional[NextTransaction] = None
+    update_summary: Optional[UpdateSummary] = None
+
+
 @dataclass
 class SubscriptionListResponse:
     """
@@ -193,4 +238,32 @@ class SubscriptionGetResponse:
 
     def __init__(self, response: Dict[str, Any]):
         self.data = SubscriptionDataWithTransactions(**response["data"])
+        self.meta = Meta(**response["meta"])
+
+
+@dataclass
+class SubscriptionPreviewUpdateResponse:
+    """
+    Response for the Subscription Preview Update endpoint.
+    """
+
+    data: PreviewUpdateData
+    meta: Meta
+
+    def __init__(self, response: Dict[str, Any]):
+        self.data = PreviewUpdateData(**response["data"])
+        self.meta = Meta(**response["meta"])
+
+
+@dataclass
+class SubscriptionUpdateResponse:
+    """
+    Response for the Subscription Update endpoint.
+    """
+
+    data: SubscriptionData
+    meta: Meta
+
+    def __init__(self, response: Dict[str, Any]):
+        self.data = SubscriptionData(**response["data"])
         self.meta = Meta(**response["meta"])

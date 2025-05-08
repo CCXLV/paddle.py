@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from paddle.models.responses.products import ProductData
 
 
-# Types
+# Typing
 class BillingCycleType(TypedDict):
     frequency: int
     interval: Literal["day", "week", "month", "year"]
@@ -31,7 +31,7 @@ class QuantityType(TypedDict):
     maximum: int
 
 
-# BaseModels
+# Models
 class UnitPrice(BaseModel):
     amount: str
     currency_code: CURRENCY_CODE

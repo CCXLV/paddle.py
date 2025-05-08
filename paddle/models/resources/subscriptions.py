@@ -10,7 +10,14 @@ from paddle.client import Client
 from paddle.aio.client import AsyncClient
 
 from paddle.models.resources.base import ResourceBase
-from paddle.models.responses.subscriptions import SubscriptionListResponse, SubscriptionGetResponse
+from paddle.models.responses.subscriptions import (
+    SubscriptionListResponse,
+    SubscriptionGetResponse,
+    SubscriptionPreviewUpdateResponse,
+    DiscountType,
+    BillingDetailsType,
+    SubscriptionUpdateResponse,
+)
 
 from paddle.utils.decorators import validate_params
 from paddle.utils.helpers import filter_none_kwargs
@@ -125,6 +132,104 @@ class SubscriptionBase(ResourceBase):
         except PaddleAPIError as e:
             raise create_paddle_error(e.status_code, e.message) from e
 
+    @validate_params
+    def preview_update(
+        self,
+        subscription_id: str,
+        *,
+        customer_id: Optional[str] = None,
+        address_id: Optional[str] = None,
+        business_id: Optional[str] = None,
+        currency_code: Optional[str] = None,
+        next_billed_at: Optional[str] = None,
+        discount: Optional[DiscountType] = None,
+        collection_mode: Optional[Literal["automatic", "manual"]] = None,
+        billing_details: Optional[BillingDetailsType] = None,
+        scheduled_change: None = None,
+        items: Optional[List[Dict[str, Any]]] = None,
+        custom_data: Optional[Dict[str, Any]] = None,
+        proration_billing_mode: Optional[
+            Literal[
+                "prorated_immediately",
+                "prorated_next_billing_period",
+                "full_immediately",
+                "full_next_billing_period",
+                "do_not_bill",
+            ]
+        ] = None,
+        on_payment_failure: Optional[Literal["prevent_change", "apply_change"]] = None,
+    ) -> SubscriptionPreviewUpdateResponse:
+        try:
+            kwargs = filter_none_kwargs(
+                customer_id=customer_id,
+                address_id=address_id,
+                business_id=business_id,
+                currency_code=currency_code,
+                next_billed_at=next_billed_at,
+                discount=discount,
+                collection_mode=collection_mode,
+                billing_details=billing_details,
+                scheduled_change=scheduled_change,
+                items=items,
+                custom_data=custom_data,
+                proration_billing_mode=proration_billing_mode,
+                on_payment_failure=on_payment_failure,
+            )
+            response = self._preview_update(subscription_id, **kwargs)
+
+            return SubscriptionPreviewUpdateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
+    @validate_params
+    def update(
+        self,
+        subscription_id: str,
+        *,
+        customer_id: Optional[str] = None,
+        address_id: Optional[str] = None,
+        business_id: Optional[str] = None,
+        currency_code: Optional[str] = None,
+        next_billed_at: Optional[str] = None,
+        discount: Optional[DiscountType] = None,
+        collection_mode: Optional[Literal["automatic", "manual"]] = None,
+        billing_details: Optional[BillingDetailsType] = None,
+        scheduled_change: None = None,
+        items: Optional[List[Dict[str, Any]]] = None,
+        custom_data: Optional[Dict[str, Any]] = None,
+        proration_billing_mode: Optional[
+            Literal[
+                "prorated_immediately",
+                "prorated_next_billing_period",
+                "full_immediately",
+                "full_next_billing_period",
+                "do_not_bill",
+            ]
+        ] = None,
+        on_payment_failure: Optional[Literal["prevent_change", "apply_change"]] = None,
+    ) -> SubscriptionUpdateResponse:
+        try:
+            kwargs = filter_none_kwargs(
+                customer_id=customer_id,
+                address_id=address_id,
+                business_id=business_id,
+                currency_code=currency_code,
+                next_billed_at=next_billed_at,
+                discount=discount,
+                collection_mode=collection_mode,
+                billing_details=billing_details,
+                scheduled_change=scheduled_change,
+                items=items,
+                custom_data=custom_data,
+                proration_billing_mode=proration_billing_mode,
+                on_payment_failure=on_payment_failure,
+            )
+            response = self._update(subscription_id, **kwargs)
+
+            return SubscriptionUpdateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
     # TODO: Add remaining endpoints
 
 
@@ -150,7 +255,21 @@ class Subscription(SubscriptionBase):
             params=kwargs,
         )
 
-    # TODO: Add remaining endpoints
+    def _preview_update(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to preview an update to a subscription."""
+        return self._client._request(
+            method="PATCH",
+            path=f"/subscriptions/{subscription_id}/preview",
+            json=kwargs,
+        )
+
+    def _update(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to update a subscription."""
+        return self._client._request(
+            method="PATCH",
+            path=f"/subscriptions/{subscription_id}",
+            json=kwargs,
+        )
 
 
 class AsyncSubscription(SubscriptionBase):
@@ -173,6 +292,22 @@ class AsyncSubscription(SubscriptionBase):
             method="GET",
             path=f"/subscriptions/{subscription_id}",
             params=kwargs,
+        )
+
+    async def _preview_update(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to preview an update to a subscription."""
+        return await self._client._request(
+            method="PATCH",
+            path=f"/subscriptions/{subscription_id}/preview",
+            json=kwargs,
+        )
+    
+    async def _update(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to update a subscription."""
+        return await self._client._request(
+            method="PATCH",
+            path=f"/subscriptions/{subscription_id}",
+            json=kwargs,
         )
 
     @validate_params
@@ -229,6 +364,105 @@ class AsyncSubscription(SubscriptionBase):
             response = await self._get(subscription_id, **kwargs)
 
             return SubscriptionGetResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
+    @validate_params
+    async def preview_update(
+        self,
+        subscription_id: str,
+        *,
+        customer_id: Optional[str] = None,
+        address_id: Optional[str] = None,
+        business_id: Optional[str] = None,
+        currency_code: Optional[str] = None,
+        next_billed_at: Optional[str] = None,
+        discount: Optional[DiscountType] = None,
+        collection_mode: Optional[Literal["automatic", "manual"]] = None,
+        billing_details: Optional[BillingDetailsType] = None,
+        scheduled_change: None = None,
+        items: Optional[List[Dict[str, Any]]] = None,
+        custom_data: Optional[Dict[str, Any]] = None,
+        proration_billing_mode: Optional[
+            Literal[
+                "prorated_immediately",
+                "prorated_next_billing_period",
+                "full_immediately",
+                "full_next_billing_period",
+                "do_not_bill",
+            ]
+        ] = None,
+        on_payment_failure: Optional[Literal["prevent_change", "apply_change"]] = None,
+    ) -> SubscriptionPreviewUpdateResponse:
+        try:
+            kwargs = filter_none_kwargs(
+                customer_id=customer_id,
+                address_id=address_id,
+                business_id=business_id,
+                currency_code=currency_code,
+                next_billed_at=next_billed_at,
+                discount=discount,
+                collection_mode=collection_mode,
+                billing_details=billing_details,
+                scheduled_change=scheduled_change,
+                items=items,
+                custom_data=custom_data,
+                proration_billing_mode=proration_billing_mode,
+                on_payment_failure=on_payment_failure,
+            )
+            response = await self._preview_update(subscription_id, **kwargs)
+
+            return SubscriptionPreviewUpdateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
+
+    @validate_params
+    async def update(
+        self,
+        subscription_id: str,
+        *,
+        customer_id: Optional[str] = None,
+        address_id: Optional[str] = None,
+        business_id: Optional[str] = None,
+        currency_code: Optional[str] = None,
+        next_billed_at: Optional[str] = None,
+        discount: Optional[DiscountType] = None,
+        collection_mode: Optional[Literal["automatic", "manual"]] = None,
+        billing_details: Optional[BillingDetailsType] = None,
+        scheduled_change: None = None,
+        items: Optional[List[Dict[str, Any]]] = None,
+        custom_data: Optional[Dict[str, Any]] = None,
+        proration_billing_mode: Optional[
+            Literal[
+                "prorated_immediately",
+                "prorated_next_billing_period",
+                "full_immediately",
+                "full_next_billing_period",
+                "do_not_bill",
+            ]
+        ] = None,
+        on_payment_failure: Optional[Literal["prevent_change", "apply_change"]] = None,
+    ) -> SubscriptionUpdateResponse:
+        try:
+            kwargs = filter_none_kwargs(
+                customer_id=customer_id,
+                address_id=address_id,
+                business_id=business_id,
+                currency_code=currency_code,
+                next_billed_at=next_billed_at,
+                discount=discount,
+                collection_mode=collection_mode,
+                billing_details=billing_details,
+                scheduled_change=scheduled_change,
+                items=items,
+                custom_data=custom_data,
+                proration_billing_mode=proration_billing_mode,
+                on_payment_failure=on_payment_failure,
+            )
+            response = await self._update(subscription_id, **kwargs)
+
+            return SubscriptionUpdateResponse(response)
         except PaddleAPIError as e:
             raise create_paddle_error(e.status_code, e.message) from e
 

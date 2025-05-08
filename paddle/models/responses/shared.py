@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal, Optional, TypedDict
 
 from pydantic import BaseModel
 
@@ -24,5 +24,10 @@ class MetaWithPagination(Meta):
 
 
 class BillingCycle(BaseModel):
+    frequency: int
+    interval: Literal["day", "week", "month", "year"]
+
+
+class BillingCycleType(TypedDict):
     frequency: int
     interval: Literal["day", "week", "month", "year"]
