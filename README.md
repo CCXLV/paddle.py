@@ -29,8 +29,7 @@ pip install paddle-sdk
 ### Synchronous Client
 
 ```python
-from paddle import Client
-from paddle.environment import Environment
+from paddle import Client, Environment
 
 # Initialize the client
 client = Client(
@@ -43,7 +42,7 @@ products = client.products.list()
 print(products)
 
 # Get a specific product
-product = client.products.get(product_id="pro_123")
+product = client.products.get(product_id="pro_123456789")
 print(product)
 ```
 
@@ -53,7 +52,7 @@ print(product)
 import asyncio
 
 from paddle.aio import AsyncClient
-from paddle.environment import Environment
+from paddle import Environment
 
 
 async def main():
