@@ -29,20 +29,21 @@ pip install paddle-sdk
 ### Synchronous Client
 
 ```python
-from paddle import Client, Environment
+from paddle import Client
+from paddle.environment import Environment
 
 # Initialize the client
 client = Client(
-    api_key="your-api-key",
+    api_key="API_KEY",
     environment=Environment.SANDBOX  # or Environment.PRODUCTION
 )
 
 # List products
-products = client.product.list()
+products = client.products.list()
 print(products)
 
 # Get a specific product
-product = client.product.get(product_id="pro_123")
+product = client.products.get(product_id="pro_123")
 print(product)
 ```
 
@@ -61,11 +62,11 @@ async def main():
         environment=Environment.SANDBOX,  # or Environment.PRODUCTION
     ) as client:
         # List products
-        all_products = await client.product.list()
+        all_products = await client.products.list()
         print(all_products)
 
         # Get a product
-        product = await client.product.get("pro_123456789")
+        product = await client.products.get("pro_123456789")
         print(product)
 
 
