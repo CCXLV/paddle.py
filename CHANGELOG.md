@@ -90,10 +90,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [ ] Revise
 
 - [ ] Subscriptions
-  - [ ] List
-  - [ ] Get
-  - [ ] Preview
-  - [ ] Update
+  - [x] List
+  - [x] Get
+  - [x] Preview
+  - [x] Update
   - [ ] Get transaction to update payment method
   - [ ] Preview charge
   - [ ] Charge
