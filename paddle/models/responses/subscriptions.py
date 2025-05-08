@@ -3,7 +3,7 @@ from typing import Optional, Literal, Dict, Any, List
 
 from pydantic import BaseModel
 
-from paddle.models.responses.shared import BillingCycle, ImportMeta, MetaWithPagination
+from paddle.models.responses.shared import BillingCycle, ImportMeta, MetaWithPagination, Meta
 from paddle.models.responses.prices import PriceData
 from paddle.models.responses.products import ProductData
 
@@ -65,7 +65,7 @@ class SubscriptionData(BaseModel):
     paused_at: Optional[str] = None
     canceled_at: Optional[str] = None
     discount: Optional[Discount] = None
-    collection_mode = Literal["automatic", "manual"]
+    collection_mode: Literal["automatic", "manual"]
     billing_details: Optional[BillingDetails] = None
     current_billing_period: Optional[DateRange] = None
     billing_cycle: BillingCycle
@@ -76,11 +76,14 @@ class SubscriptionData(BaseModel):
     import_meta: Optional[ImportMeta] = None
 
 
-class Total(BaseModel):
+class BaseTotal(BaseModel):
     subtotal: str
-    discount: str
     tax: str
     total: str
+
+
+class Total(BaseTotal):
+    discount: str
 
 
 class TransactionTotal(Total):
@@ -93,26 +96,76 @@ class TransactionTotal(Total):
     currency_code: str
 
 
+class AdjustmentTotal(Total):
+    earnings: str
+    currency_code: str
+
+
 class TaxRatesUsed(BaseModel):
     tax_rate: str
     totals: Total
 
 
-# TODO: Finish this
+class Proration(BaseModel):
+    rate: str
+    billing_period: DateRange
+
+
+class LineItem(BaseModel):
+    price_id: Optional[str] = None
+    quantity: int
+    tax_rate: str
+    unit_totals: Total
+    totals: Total
+    product: ProductData
+    proration: Optional[Proration] = None
+
+
 class NextTransactionDetails(BaseModel):
     tax_rates_used: List[TaxRatesUsed]
     totals: TransactionTotal
+    line_items: List[LineItem]
 
 
-# TODO: Finish this
+class AdjustmentItem(BaseModel):
+    item_id: str
+    type: Literal["full", "partial", "tax", "proration"]
+    amount: Optional[str] = None
+    proration: Optional[Proration] = None
+    totals: BaseTotal
+
+
+class Adjustment(BaseModel):
+    transaction_id: str
+    items: List[AdjustmentItem]
+    totals: AdjustmentTotal
+
+
 class NextTransaction(BaseModel):
     billing_period: DateRange
     details: NextTransactionDetails
+    adjustments: List[Adjustment]
 
 
-# TODO: Finish this
+class TransactionDetailsTotals(Total):
+    credit: str
+    credit_to_balance: str
+    balance: str
+    grand_total: str
+    fee: Optional[str] = None
+    earnings: Optional[str] = None
+    currency_code: str
+
+
+class RecurringTransactionDetails(BaseModel):
+    tax_rates_used: List[TaxRatesUsed]
+    totals: TransactionDetailsTotals
+    line_items: List[LineItem]
+
+
 class SubscriptionDataWithTransactions(SubscriptionData):
     next_transaction: Optional[NextTransaction] = None
+    recurring_transaction_details: Optional[RecurringTransactionDetails] = None
 
 
 @dataclass
@@ -127,3 +180,17 @@ class SubscriptionListResponse:
     def __init__(self, response: Dict[str, Any]):
         self.data = [SubscriptionData(**item) for item in response["data"]]
         self.meta = MetaWithPagination(**response["meta"])
+
+
+@dataclass
+class SubscriptionGetResponse:
+    """
+    Response for the Subscription Get endpoint.
+    """
+
+    data: SubscriptionDataWithTransactions
+    meta: Meta
+
+    def __init__(self, response: Dict[str, Any]):
+        self.data = SubscriptionDataWithTransactions(**response["data"])
+        self.meta = Meta(**response["meta"])

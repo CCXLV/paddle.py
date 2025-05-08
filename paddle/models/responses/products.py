@@ -17,15 +17,15 @@ if TYPE_CHECKING:
 class ProductData(BaseModel):
     id: str
     name: str
-    tax_category: TAX_CATEGORY
-    type: str
-    status: Literal["active", "archived"]
-    created_at: str
-    updated_at: str
     description: Optional[str] = None
+    type: str
+    tax_category: TAX_CATEGORY
     image_url: Optional[str] = None
     custom_data: Optional[Dict[str, Any]] = None
+    status: Literal["active", "archived"]
     import_meta: Optional[ImportMeta] = None
+    created_at: str
+    updated_at: str
 
 
 class ProductDataWithPrices(ProductData):

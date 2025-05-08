@@ -10,7 +10,7 @@ from paddle.client import Client
 from paddle.aio.client import AsyncClient
 
 from paddle.models.resources.base import ResourceBase
-from paddle.models.responses.subscriptions import SubscriptionListResponse
+from paddle.models.responses.subscriptions import SubscriptionListResponse, SubscriptionGetResponse
 
 from paddle.utils.decorators import validate_params
 from paddle.utils.helpers import filter_none_kwargs
@@ -77,7 +77,7 @@ class SubscriptionBase(ResourceBase):
         collection_mode: Optional[Literal["automatic", "manual"]] = None,
         customer_id: Optional[List[str]] = None,
         id: Optional[List[str]] = None,
-        order_by: Optional[Literal["id[ASC]", "id[DESC]"]],
+        order_by: Optional[Literal["id[ASC]", "id[DESC]"]] = None,
         per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50,
         price_id: Optional[List[str]] = None,
         scheduled_change_action: Optional[List[Literal["cancel", "pause", "resume"]]] = None,
@@ -106,6 +106,25 @@ class SubscriptionBase(ResourceBase):
         except PaddleAPIError as e:
             raise create_paddle_error(e.status_code, e.message) from e
 
+    @validate_params
+    def get(
+        self,
+        subscription_id: str,
+        *,
+        include: Optional[
+            List[Literal["next_transaction", "recurring_transaction_details"]]
+        ] = None,
+    ) -> SubscriptionGetResponse:
+        try:
+            kwargs = filter_none_kwargs(
+                include=",".join(include) if include else None,
+            )
+            response = self._get(subscription_id, **kwargs)
+
+            return SubscriptionGetResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
     # TODO: Add remaining endpoints
 
 
@@ -123,7 +142,94 @@ class Subscription(SubscriptionBase):
             params=kwargs,
         )
 
+    def _get(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to get a subscription."""
+        return self._client._request(
+            method="GET",
+            path=f"/subscriptions/{subscription_id}",
+            params=kwargs,
+        )
+
     # TODO: Add remaining endpoints
 
 
-# TODO: Add async endpoints
+class AsyncSubscription(SubscriptionBase):
+    """Async Paddle Subscriptions API endpoints."""
+
+    def __init__(self, client: AsyncClient):
+        super().__init__(client)
+
+    async def _list(self, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to list subscriptions."""
+        return await self._client._request(
+            method="GET",
+            path="/subscriptions",
+            params=kwargs,
+        )
+
+    async def _get(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to get a subscription."""
+        return await self._client._request(
+            method="GET",
+            path=f"/subscriptions/{subscription_id}",
+            params=kwargs,
+        )
+
+    @validate_params
+    async def list(
+        self,
+        *,
+        address_id: Optional[List[str]] = None,
+        after: Optional[str] = None,
+        collection_mode: Optional[Literal["automatic", "manual"]] = None,
+        customer_id: Optional[List[str]] = None,
+        id: Optional[List[str]] = None,
+        order_by: Optional[Literal["id[ASC]", "id[DESC]"]] = None,
+        per_page: Optional[Annotated[int, Field(ge=1, le=200)]] = 50,
+        price_id: Optional[List[str]] = None,
+        scheduled_change_action: Optional[List[Literal["cancel", "pause", "resume"]]] = None,
+        status: Optional[
+            List[Literal["active", "canceled", "past_due", "paused", "trialing"]]
+        ] = None,
+    ) -> SubscriptionListResponse:
+        try:
+            kwargs = filter_none_kwargs(
+                address_id=",".join(address_id) if address_id else None,
+                after=after,
+                collection_mode=collection_mode,
+                customer_id=",".join(customer_id) if customer_id else None,
+                id=",".join(id) if id else None,
+                order_by=order_by,
+                per_page=per_page,
+                price_id=",".join(price_id) if price_id else None,
+                scheduled_change_action=(
+                    ",".join(scheduled_change_action) if scheduled_change_action else None
+                ),
+                status=",".join(status) if status else None,
+            )
+            response = await self._list(**kwargs)
+
+            return SubscriptionListResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
+    @validate_params
+    async def get(
+        self,
+        subscription_id: str,
+        *,
+        include: Optional[
+            List[Literal["next_transaction", "recurring_transaction_details"]]
+        ] = None,
+    ) -> SubscriptionGetResponse:
+        try:
+            kwargs = filter_none_kwargs(
+                include=",".join(include) if include else None,
+            )
+            response = await self._get(subscription_id, **kwargs)
+
+            return SubscriptionGetResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
+    # TODO: Add remaining endpoints

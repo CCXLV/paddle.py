@@ -9,7 +9,6 @@ from .environment import Environment
 from .exceptions import create_paddle_error
 from .utils import is_retryable_status_code, get_retry_delay
 
-# Type variable for resource classes
 T = TypeVar("T")
 
 
@@ -122,10 +121,12 @@ class Client(BaseClient):
         from .models.resources import Product
         from .models.resources import Price
         from .models.resources import Customer
+        from .models.resources import Subscription
 
         self.products = self._create_resource(Product)
         self.prices = self._create_resource(Price)
         self.customers = self._create_resource(Customer)
+        self.subscriptions = self._create_resource(Subscription)
 
     def _request(
         self,
