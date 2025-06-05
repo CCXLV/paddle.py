@@ -80,7 +80,7 @@ if __name__ == "__main__":
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/CCXLV/paddle-sdk.git
+git clone https://github.com/CCXLV/paddle.py.git
 cd paddle-sdk
 ```
 
