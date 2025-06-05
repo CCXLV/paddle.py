@@ -3,9 +3,9 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "paddle-sdk"
+name = "paddle.py"
 dynamic = ["version"]
-description = "A modern Python SDK for Paddle's API with type hints and async support"
+description = "A modern Python API wrapper for Paddle's API with type hints and async support"
 license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.8"
@@ -25,7 +25,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-keywords = ["paddle", "api", "wrapper", "sdk", "async", "types"]
+keywords = ["paddle", "api", "wrapper", "async", "types"]
 dependencies = [
     "httpx>=0.28.1",
     "pydantic>=2.10.2",
@@ -64,14 +64,9 @@ lint.ignore = [
     "B008",  # do not perform function calls in argument defaults
     "C901",  # complexity,
 ]
-
-# Exclude a variety of commonly ignored directories.
 exclude = [
     ".git",
     ".ruff_cache",
     ".venv",
     "examples",
 ]
-
-[tool.ruff.lint.mccabe]
-max-complexity = 10

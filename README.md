@@ -1,6 +1,6 @@
 # Paddle SDK
 
-A modern Python SDK for Paddle's API with type hints and async support.
+A modern Python API wrapper for Paddle's API with type hints and async support.
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
@@ -21,7 +21,7 @@ A modern Python SDK for Paddle's API with type hints and async support.
 ## Installation
 
 ```bash
-pip install paddle-sdk
+pip install paddle.py
 ```
 
 ## Quick Start
