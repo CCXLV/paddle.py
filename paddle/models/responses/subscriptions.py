@@ -9,6 +9,7 @@ from paddle.models.responses.shared import (
     MetaWithPagination,
     Meta,
     BillingCycleType,
+    DateRange,
 )
 from paddle.models.responses.prices import PriceData
 from paddle.models.responses.products import ProductData
@@ -39,11 +40,6 @@ class BillingDetails(BaseModel):
     enable_checkout: bool
     purchase_order_number: str
     additional_information: Optional[str] = None
-
-
-class DateRange(BaseModel):
-    starts_at: str
-    ends_at: str
 
 
 class ScheduledChange(BaseModel):
@@ -97,6 +93,30 @@ class SubscriptionBase(BaseModel):
 
 class SubscriptionData(SubscriptionBase):
     id: str
+
+
+class SubscriptionDataForPaymentMethodUpdate(BaseModel):
+    id: str
+    status: Literal["draft", "ready", "billed", "paid", "completed", "canceled", "past_due"]
+    customer_id: Optional[str] = None
+    address_id: Optional[str] = None
+    business_id: Optional[str] = None
+    custom_data: Optional[Dict[str, Any]] = None
+    currency_code: Optional[str] = None
+    origin: Literal[
+        "api",
+        "subscription_charge",
+        "subscription_payment_method_change",
+        "subscription_recurring",
+        "subscription_update",
+        "web",
+    ]
+    subscription_id: Optional[str] = None
+    invoice_id: Optional[str] = None
+    invoice_number: Optional[str] = None
+    invoice_date: Optional[str] = None
+    billing_details: Optional[BillingDetails] = None
+    billing_period: Optional[DateRange] = None
 
 
 class BaseTotal(BaseModel):

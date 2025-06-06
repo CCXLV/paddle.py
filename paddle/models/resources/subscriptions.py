@@ -47,8 +47,8 @@ class SubscriptionBase(ResourceBase):
         """Internal method to update a subscription."""
         raise NotImplementedError("Subclasses must implement this method")
 
-    def _get_transaction(self, subscription_id: str) -> Dict[str, Any]:
-        """Internal method to get a transaction for a subscription."""
+    def _get_transaction_to_update_payment_method(self, subscription_id: str) -> Dict[str, Any]:
+        """Internal method to get a transaction to update a payment method."""
         raise NotImplementedError("Subclasses must implement this method")
 
     def _preview_charge(self, subscription_id: str) -> Dict[str, Any]:
@@ -230,6 +230,35 @@ class SubscriptionBase(ResourceBase):
         except PaddleAPIError as e:
             raise create_paddle_error(e.status_code, e.message) from e
 
+    @validate_params
+    def get_transaction_to_update_payment_method(
+        self,
+        subscription_id: str,
+    ) -> SubscriptionGetResponse:
+        try:
+            response = self._get_transaction_to_update_payment_method(subscription_id)
+
+            return SubscriptionUpdateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
+    @validate_params
+    def cancel(
+        self,
+        subscription_id: str,
+        *,
+        effective_from: Optional[Literal["next_billing_period", "immediately"]] = None,
+    ) -> SubscriptionUpdateResponse:
+        try:
+            kwargs = filter_none_kwargs(
+                effective_from=effective_from,
+            )
+            response = self._cancel(subscription_id, **kwargs)
+
+            return SubscriptionUpdateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
     # TODO: Add remaining endpoints
 
 
@@ -271,6 +300,14 @@ class Subscription(SubscriptionBase):
             json=kwargs,
         )
 
+    def _cancel(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to cancel a subscription."""
+        return self._client._request(
+            method="PATCH",
+            path=f"/subscriptions/{subscription_id}/cancel",
+            json=kwargs,
+        )
+
 
 class AsyncSubscription(SubscriptionBase):
     """Async Paddle Subscriptions API endpoints."""
@@ -301,12 +338,20 @@ class AsyncSubscription(SubscriptionBase):
             path=f"/subscriptions/{subscription_id}/preview",
             json=kwargs,
         )
-    
+
     async def _update(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
         """Internal method to update a subscription."""
         return await self._client._request(
             method="PATCH",
             path=f"/subscriptions/{subscription_id}",
+            json=kwargs,
+        )
+
+    async def _cancel(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
+        """Internal method to cancel a subscription."""
+        return await self._client._request(
+            method="PATCH",
+            path=f"/subscriptions/{subscription_id}/cancel",
             json=kwargs,
         )
 
@@ -416,7 +461,6 @@ class AsyncSubscription(SubscriptionBase):
         except PaddleAPIError as e:
             raise create_paddle_error(e.status_code, e.message) from e
 
-
     @validate_params
     async def update(
         self,
@@ -461,6 +505,23 @@ class AsyncSubscription(SubscriptionBase):
                 on_payment_failure=on_payment_failure,
             )
             response = await self._update(subscription_id, **kwargs)
+
+            return SubscriptionUpdateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
+    @validate_params
+    async def cancel(
+        self,
+        subscription_id: str,
+        *,
+        effective_from: Optional[Literal["next_billing_period", "immediately"]] = None,
+    ) -> SubscriptionUpdateResponse:
+        try:
+            kwargs = filter_none_kwargs(
+                effective_from=effective_from,
+            )
+            response = await self._cancel(subscription_id, **kwargs)
 
             return SubscriptionUpdateResponse(response)
         except PaddleAPIError as e:

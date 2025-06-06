@@ -31,3 +31,8 @@ class BillingCycle(BaseModel):
 class BillingCycleType(TypedDict):
     frequency: int
     interval: Literal["day", "week", "month", "year"]
+
+
+class DateRange(BaseModel):
+    starts_at: str
+    ends_at: str

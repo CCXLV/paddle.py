@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
 ```bash
 git clone https://github.com/CCXLV/paddle.py.git
-cd paddle-sdk
+cd paddle.py
 ```
 
 2. Create a virtual environment:
