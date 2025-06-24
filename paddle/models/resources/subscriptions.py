@@ -300,6 +300,13 @@ class Subscription(SubscriptionBase):
             json=kwargs,
         )
 
+    def _get_transaction_to_update_payment_method(self, subscription_id: str) -> Dict[str, Any]:
+        """Internal method to get a transaction to update a payment method."""
+        return self._client._request(
+            method="GET",
+            path=f"/subscriptions/{subscription_id}/update-payment-method-transaction",
+        )
+
     def _cancel(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
         """Internal method to cancel a subscription."""
         return self._client._request(
@@ -345,6 +352,15 @@ class AsyncSubscription(SubscriptionBase):
             method="PATCH",
             path=f"/subscriptions/{subscription_id}",
             json=kwargs,
+        )
+
+    async def _get_transaction_to_update_payment_method(
+        self, subscription_id: str
+    ) -> Dict[str, Any]:
+        """Internal method to get a transaction to update a payment method."""
+        return await self._client._request(
+            method="GET",
+            path=f"/subscriptions/{subscription_id}/update-payment-method-transaction",
         )
 
     async def _cancel(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
@@ -507,6 +523,18 @@ class AsyncSubscription(SubscriptionBase):
             response = await self._update(subscription_id, **kwargs)
 
             return SubscriptionUpdateResponse(response)
+        except PaddleAPIError as e:
+            raise create_paddle_error(e.status_code, e.message) from e
+
+    @validate_params
+    async def get_transaction_to_update_payment_method(
+        self,
+        subscription_id: str,
+    ) -> SubscriptionGetResponse:
+        try:
+            response = await self._get_transaction_to_update_payment_method(subscription_id)
+
+            return SubscriptionGetResponse(response)
         except PaddleAPIError as e:
             raise create_paddle_error(e.status_code, e.message) from e
 
