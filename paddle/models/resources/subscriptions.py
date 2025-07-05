@@ -310,7 +310,7 @@ class Subscription(SubscriptionBase):
     def _cancel(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
         """Internal method to cancel a subscription."""
         return self._client._request(
-            method="PATCH",
+            method="POST",
             path=f"/subscriptions/{subscription_id}/cancel",
             json=kwargs,
         )
@@ -366,7 +366,7 @@ class AsyncSubscription(SubscriptionBase):
     async def _cancel(self, subscription_id: str, **kwargs: Any) -> Dict[str, Any]:
         """Internal method to cancel a subscription."""
         return await self._client._request(
-            method="PATCH",
+            method="POST",
             path=f"/subscriptions/{subscription_id}/cancel",
             json=kwargs,
         )
