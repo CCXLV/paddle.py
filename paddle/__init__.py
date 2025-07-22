@@ -1,5 +1,4 @@
-__version__ = "0.1.2"
-__all__ = ["Client", "Environment"]
+__version__ = "0.1.3"
 
 from .client import Client
 from .environment import Environment
